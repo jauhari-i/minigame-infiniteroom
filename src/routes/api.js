@@ -1,9 +1,14 @@
 const router = require('express').Router();
+
 const basicAuth = require('../middlewares/basicAuth');
 const authValidator = require('../middlewares/validators/auth');
 const authController = require('../controllers/v1/authController');
+const allApi = require('express-list-endpoints');
 
-router.get('/', (req, res) => res.send('Minigames API'));
+router.get('/', (req, res) => {
+  const api = allApi(router);
+  res.status(200).json({ api: api });
+});
 
 // auth
 router.post('/user/register', [basicAuth, authValidator.registerUser], authController.registerUser);
