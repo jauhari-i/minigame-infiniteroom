@@ -28,7 +28,7 @@ module.exports = authServices = {
       const token = jwt.sign(
         {
           sub: user.uuid,
-          nama: user.sendVerificationEmail,
+          nama: user.nama,
         },
         'minigames-verification',
         { expiresIn: '30m' }
@@ -150,11 +150,25 @@ module.exports = authServices = {
           code: 404,
           message: 'User not found',
         };
-      await sendVerificationEmail(email, token, (err, info) => {
+      const newToken = jwt.sign(
+        {
+          sub: user.uuid,
+          nama: user.nama,
+        },
+        'minigames-verification',
+        { expiresIn: '30m' }
+      );
+      if (user.isVerified) {
+        return {
+          code: 200,
+          message: 'User already verified',
+        };
+      }
+      await sendVerificationEmail(user.email, newToken, (err, info) => {
         if (err) {
           return {
             code: 400,
-            message: emails.message,
+            message: 'Failed to send email',
           };
         }
         return;
