@@ -9,47 +9,48 @@ module.exports = authController = {
         message: m.msg,
       }));
       res.status(400).json(messages);
-    }
-    const { nama, email, username, password } = req.body;
-    const query = await authService.registerUser({ nama, email, username, password });
-    if (query) {
-      if (!query.code) {
-        return res.status(500).json({
-          code: 500,
-          message: 'Internal server error',
-        });
+    } else {
+      const { nama, email, username, password } = req.body;
+      const query = await authService.registerUser({ nama, email, username, password });
+      if (query) {
+        if (!query.code) {
+          return res.status(500).json({
+            code: 500,
+            message: 'Internal server error',
+          });
+        }
+        return res.status(query.code).json(query);
       }
-      return res.status(query.code).json(query);
+      res.status(500).json({
+        code: 500,
+        message: 'Internal server error',
+      });
     }
-    res.status(500).json({
-      code: 500,
-      message: 'Internal server error',
-    });
   },
   loginUser: async (req, res) => {
     const err = validationResult(req);
-    console.log(err);
     if (err.errors.length) {
       let messages = err.errors.map((m) => ({
         message: m.msg,
       }));
       res.status(400).json(messages);
-    }
-    const { email, password } = req.body;
-    const query = await authService.loginUser({ email, password });
-    if (query) {
-      if (!query.code) {
-        return res.status(500).json({
-          code: 500,
-          message: 'Internal server error',
-        });
+    } else {
+      const { email, password } = req.body;
+      const query = await authService.loginUser({ email, password });
+      if (query) {
+        if (!query.code) {
+          return res.status(500).json({
+            code: 500,
+            message: 'Internal server error',
+          });
+        }
+        return res.status(query.code).json(query);
       }
-      return res.status(query.code).json(query);
+      res.status(500).json({
+        code: 500,
+        message: 'Internal server error',
+      });
     }
-    res.status(500).json({
-      code: 500,
-      message: 'Internal server error',
-    });
   },
   verifyUser: async (req, res) => {
     const { token } = req.params;
@@ -84,5 +85,30 @@ module.exports = authController = {
       code: 500,
       message: 'Internal server error',
     });
+  },
+  forgotPassword: async (req, res) => {
+    const err = validationResult(req);
+    if (err.errors.length) {
+      let messages = err.errors.map((m) => ({
+        message: m.msg,
+      }));
+      res.status(400).json(messages);
+    } else {
+      const { email } = req.body;
+      const query = await authService.forgotPassword({ email });
+      if (query) {
+        if (!query.code) {
+          return res.status(500).json({
+            code: 500,
+            message: 'Internal server error',
+          });
+        }
+        return res.status(query.code).json(query);
+      }
+      res.status(500).json({
+        code: 500,
+        message: 'Internal server error',
+      });
+    }
   },
 };

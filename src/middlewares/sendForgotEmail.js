@@ -23,7 +23,7 @@ module.exports = sendVerificationEmail = async (email, token, cb) => {
     const mailOptions = {
       from: `"Minigames Infiniteroom" <minigames@tranceformasiindonesia.com>`,
       to: email,
-      subject: 'Account Verification',
+      subject: 'Forgot Password',
       html: htmlToSend,
     };
     transporter.sendMail(mailOptions, (err, info) => {

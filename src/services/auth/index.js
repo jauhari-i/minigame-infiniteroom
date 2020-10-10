@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 const sendVerificationEmail = require('../../middlewares/sendVerificationEmail');
+const sendForgotEmail = require('../../middlewares/sendForgotEmail');
 
 module.exports = authServices = {
   registerUser: async ({ nama, email, username, password }) => {
@@ -14,7 +15,7 @@ module.exports = authServices = {
           message: 'Internal server error, failed to proccesing data',
         };
       const user = await User.create({
-        uuid: uuid(),
+        userId: uuid(),
         nama: nama,
         email: email,
         username: username,
@@ -27,7 +28,7 @@ module.exports = authServices = {
         };
       const token = jwt.sign(
         {
-          sub: user.uuid,
+          sub: user.userId,
           nama: user.nama,
         },
         'minigames-verification',
@@ -46,13 +47,11 @@ module.exports = authServices = {
         code: 201,
         message: 'Register user success',
         data: {
-          user: {
-            uuid: user.uuid,
-            nama: user.nama,
-            email: user.email,
-            username: user.username,
-            isVerified: user.isVerified,
-          },
+          userId: user.userId,
+          nama: user.nama,
+          email: user.email,
+          username: user.username,
+          isVerified: user.isVerified,
         },
       };
     } catch (error) {
@@ -80,7 +79,7 @@ module.exports = authServices = {
         };
       const token = jwt.sign(
         {
-          sub: user.uuid,
+          sub: user.userId,
           nama: user.nama,
           role: 0,
         },
@@ -106,7 +105,7 @@ module.exports = authServices = {
           code: 400,
           message: 'Token is invalid or expired',
         };
-      const checkVerify = await User.findOne({ uuid: decoded.sub });
+      const checkVerify = await User.findOne({ userId: decoded.sub });
       if (checkVerify.isVerified) {
         return {
           code: 200,
@@ -114,7 +113,7 @@ module.exports = authServices = {
         };
       }
       const user = await User.updateOne(
-        { uuid: decoded.sub },
+        { userId: decoded.sub },
         {
           isVerified: true,
           verifiedAt: Date.now(),
@@ -143,7 +142,7 @@ module.exports = authServices = {
           message: 'Token is invalid',
         };
       const user = await User.findOne({
-        uuid: decoded.sub,
+        userId: decoded.sub,
       });
       if (!user)
         throw {
@@ -152,7 +151,7 @@ module.exports = authServices = {
         };
       const newToken = jwt.sign(
         {
-          sub: user.uuid,
+          sub: user.userId,
           nama: user.nama,
         },
         'minigames-verification',
@@ -166,7 +165,7 @@ module.exports = authServices = {
       }
       await sendVerificationEmail(user.email, newToken, (err, info) => {
         if (err) {
-          return {
+          throw {
             code: 400,
             message: 'Failed to send email',
           };
@@ -176,6 +175,39 @@ module.exports = authServices = {
       return {
         code: 200,
         message: 'Email verification has been send',
+      };
+    } catch (error) {
+      return error;
+    }
+  },
+  forgotPassword: async ({ email }) => {
+    try {
+      const user = await User.findOne({ email: email });
+      if (!user)
+        throw {
+          code: 404,
+          message: 'User not exist',
+        };
+      const token = jwt.sign(
+        {
+          sub: user.userId,
+          email: user.email,
+        },
+        'minigames-forgot-password',
+        { expiresIn: '1h' }
+      );
+      await sendForgotEmail(email, token, (err, info) => {
+        if (err) {
+          return {
+            code: 400,
+            message: 'Failed to send email',
+          };
+        }
+        return;
+      });
+      return {
+        code: 200,
+        message: 'Email has been sent',
       };
     } catch (error) {
       return error;

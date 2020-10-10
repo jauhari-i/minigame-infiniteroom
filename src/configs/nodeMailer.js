@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 let transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: 'mail.tranceformasiindonesia.com',
   port: 465,
   secure: true, // use SSL
   auth: {

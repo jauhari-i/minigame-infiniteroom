@@ -35,4 +35,12 @@ module.exports = authValidator = {
       .withMessage('Email tidak boleh kosong'),
     check('password').not().isEmpty().withMessage('Kata sandi tidak boleh kosong'),
   ],
+  forgotPassword: [
+    check('email')
+      .isEmail()
+      .withMessage('Email tidak valid')
+      .not()
+      .isEmpty()
+      .withMessage('Email tidak boleh kosong'),
+  ],
 };
