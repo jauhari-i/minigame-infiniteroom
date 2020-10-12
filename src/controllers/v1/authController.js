@@ -10,7 +10,13 @@ module.exports = authController = {
       }));
       res.status(400).json(messages);
     } else {
-      const { nama, email, username, password } = req.body;
+      const { nama, email, username, password, confirmPassword } = req.body;
+      if (password !== confirmPassword) {
+        res.status(400).json({
+          code: 400,
+          message: 'Password confirmation not match',
+        });
+      }
       const query = await authService.registerUser({ nama, email, username, password });
       if (query) {
         if (!query.code) {
@@ -109,6 +115,72 @@ module.exports = authController = {
         code: 500,
         message: 'Internal server error',
       });
+    }
+  },
+  changeForgotPassword: async (req, res) => {
+    const err = validationResult(req);
+    if (err.errors.length) {
+      let messages = err.errors.map((m) => ({
+        message: m.msg,
+      }));
+      res.status(400).json(messages);
+    } else {
+      let token = req.params.token;
+      const { password, confirmPassword } = req.body;
+      if (password !== confirmPassword) {
+        res.status(400).json({
+          code: 400,
+          message: 'Password confirmation not match',
+        });
+      }
+      const query = await authService.changePassword(password, token);
+      if (query) {
+        console.log(query);
+        if (!query.code) {
+          return res.status(500).json({
+            code: 500,
+            message: 'Internal server error',
+          });
+        }
+        return res.status(query.code).json(query);
+      } else {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+    }
+  },
+  changeUserPassword: async (req, res) => {
+    const err = validationResult(req);
+    if (err.errors.length) {
+      let messages = err.errors.map((m) => ({
+        message: m.msg,
+      }));
+      res.status(400).json(messages);
+    } else {
+      const { password, confirmPassword } = req.body;
+      if (password !== confirmPassword) {
+        res.status(400).json({
+          code: 400,
+          message: 'Password confirmation not match',
+        });
+      }
+      const query = await authService.changePasswordUser(password, req.decoded);
+      if (query) {
+        if (!query.code) {
+          return res.status(500).json({
+            code: 500,
+            message: 'Internal server error',
+          });
+        }
+        return res.status(query.code).json(query);
+      } else {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
     }
   },
 };

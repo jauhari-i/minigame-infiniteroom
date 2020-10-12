@@ -10,7 +10,7 @@ const readHtmlFile = (path, cb) => {
 };
 
 module.exports = sendVerificationEmail = async (email, token, cb) => {
-  readHtmlFile(path.join(__dirname, '../public/verificationMail.html'), (err, html) => {
+  readHtmlFile(path.join(__dirname, '../public/forgotPasswordMail.html'), (err, html) => {
     err && cb(err);
     const template = handlebars.compile(html);
     const data = {
@@ -19,7 +19,13 @@ module.exports = sendVerificationEmail = async (email, token, cb) => {
       link: 'https://minigame-infiniteroom.herokuapp.com/api/verify/user/' + token,
       linkRequest: 'https://minigame-infiniteroom.herokuapp.com/api/verify/request/' + token,
     };
-    const htmlToSend = template(data);
+    const localData = {
+      token: token,
+      email: email,
+      link: 'http://localhost:8000/api/verify/user/' + token,
+      linkRequest: 'http://localhost:8000/api/verify/request' + token,
+    };
+    const htmlToSend = template(process.env.MODE === 'dev' ? localData : data);
     const mailOptions = {
       from: `"Minigames Infiniteroom" <minigames@tranceformasiindonesia.com>`,
       to: email,

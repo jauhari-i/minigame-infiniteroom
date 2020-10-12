@@ -25,6 +25,7 @@ module.exports = authValidator = {
       });
     }),
     check('password').not().isEmpty().withMessage('Kata sandi tidak boleh kosong'),
+    check('confirmPassword').not().isEmpty().withMessage('Konfirmasi kata sandi'),
   ],
   loginUser: [
     check('email')
@@ -42,5 +43,9 @@ module.exports = authValidator = {
       .not()
       .isEmpty()
       .withMessage('Email tidak boleh kosong'),
+  ],
+  changePassword: [
+    check('password').not().isEmpty().withMessage('Kata sandi tidak boleh kosong'),
+    check('confirmPassword').not().isEmpty().withMessage('Konfirmasi kata sandi'),
   ],
 };

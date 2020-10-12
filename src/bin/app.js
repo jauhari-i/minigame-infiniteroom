@@ -12,7 +12,7 @@ app.use(bp.urlencoded({ extended: true }));
 app.use(log('dev'));
 
 mongoose.connect(
-  process.env.MONGO_URL,
+  process.env.mode === 'dev' ? 'mongodb://localhost:27017/minigames' : process.env.MONGO_URL,
   {
     useCreateIndex: true,
     useFindAndModify: false,
@@ -21,9 +21,11 @@ mongoose.connect(
   },
   (err) => {
     if (err) {
+      console.error(err);
       console.log('Failed to connect database');
+    } else {
+      console.log('Connected to database');
     }
-    console.log('Connected to database');
   }
 );
 

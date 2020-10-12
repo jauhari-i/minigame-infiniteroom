@@ -4,6 +4,7 @@ const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 const sendVerificationEmail = require('../../middlewares/sendVerificationEmail');
 const sendForgotEmail = require('../../middlewares/sendForgotEmail');
+const { findOneAndUpdate } = require('../../models/Users');
 
 module.exports = authServices = {
   registerUser: async ({ nama, email, username, password }) => {
@@ -35,6 +36,7 @@ module.exports = authServices = {
         { expiresIn: '30m' }
       );
       await sendVerificationEmail(email, token, (err, info) => {
+        console.log(info);
         if (err) {
           return {
             code: 400,
@@ -208,6 +210,55 @@ module.exports = authServices = {
       return {
         code: 200,
         message: 'Email has been sent',
+      };
+    } catch (error) {
+      return error;
+    }
+  },
+  changePassword: async (password, token) => {
+    try {
+      const decoded = await jwt.verify(token, 'minigames-forgot-password');
+      if (!decoded) {
+        throw {
+          code: 401,
+          message: 'Token expired',
+        };
+      }
+      const encPass = await bcryptjs.hash(password, 10);
+      if (!encPass) {
+        throw {
+          code: 500,
+          message: 'Internal server error',
+        };
+      }
+      const user = await User.findOneAndUpdate({ userId: decoded.sub }, { password: encPass });
+      return {
+        code: 200,
+        message: 'Change password success',
+        data: {
+          userId: user.userId,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  },
+  changePasswordUser: async (password, decoded) => {
+    try {
+      const encPass = await bcryptjs.hash(password, 10);
+      if (!encPass) {
+        throw {
+          code: 500,
+          message: 'Internal server error',
+        };
+      }
+      const user = await User.findOneAndUpdate({ userId: decoded.sub }, { password: encPass });
+      return {
+        code: 200,
+        message: 'Change password success',
+        data: {
+          userId: user.userId,
+        },
       };
     } catch (error) {
       return error;
