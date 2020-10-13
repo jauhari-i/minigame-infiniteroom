@@ -48,4 +48,37 @@ module.exports = userController = {
       });
     }
   },
+  getListUser: async (req, res) => {
+    const query = await userService.getListUsers();
+    if (query) {
+      if (!query.code) {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+      return res.status(query.code).json(query);
+    }
+    res.status(500).json({
+      code: 500,
+      message: 'Internal server error',
+    });
+  },
+  deleteUser: async (req, res) => {
+    const { id } = req.params;
+    const query = await userService.deleteUser(id);
+    if (query) {
+      if (!query.code) {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+      return res.status(query.code).json(query);
+    }
+    res.status(500).json({
+      code: 500,
+      message: 'Internal server error',
+    });
+  },
 };

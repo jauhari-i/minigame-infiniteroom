@@ -1,8 +1,8 @@
-const authService = require('../../services/auth');
+const adminService = require('../../services/admins');
 const { validationResult } = require('express-validator');
 
-module.exports = authController = {
-  registerUser: async (req, res) => {
+module.exports = adminController = {
+  registerAdmin: async (req, res) => {
     const err = validationResult(req);
     if (err.errors.length) {
       let messages = err.errors.map((m) => ({
@@ -10,14 +10,8 @@ module.exports = authController = {
       }));
       res.status(400).json(messages);
     } else {
-      const { name, email, username, password, confirmPassword } = req.body;
-      if (password !== confirmPassword) {
-        res.status(400).json({
-          code: 400,
-          message: 'Password confirmation not match',
-        });
-      }
-      const query = await authService.registerUser({ name, email, username, password });
+      const { name, email, password } = req.body;
+      const query = await adminService.registerAdmin({ name, email, password });
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -33,7 +27,7 @@ module.exports = authController = {
       });
     }
   },
-  loginUser: async (req, res) => {
+  loginAdmin: async (req, res) => {
     const err = validationResult(req);
     if (err.errors.length) {
       let messages = err.errors.map((m) => ({
@@ -42,7 +36,7 @@ module.exports = authController = {
       res.status(400).json(messages);
     } else {
       const { email, password } = req.body;
-      const query = await authService.loginUser({ email, password });
+      const query = await adminService.loginAdmin({ email, password });
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -58,9 +52,8 @@ module.exports = authController = {
       });
     }
   },
-  verifyUser: async (req, res) => {
-    const { token } = req.params;
-    const query = await authService.verifyUser(token);
+  getProfile: async (req, res) => {
+    const query = await adminService.getProfile(req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
@@ -75,9 +68,8 @@ module.exports = authController = {
       message: 'Internal server error',
     });
   },
-  requestVerification: async (req, res) => {
-    const { token } = req.params;
-    const query = await authService.verifyUserEmailRequest(token);
+  getListAdmin: async (req, res) => {
+    const query = await adminService.getListAdmin(req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
@@ -92,7 +84,24 @@ module.exports = authController = {
       message: 'Internal server error',
     });
   },
-  forgotPassword: async (req, res) => {
+  getDetailAdmin: async (req, res) => {
+    const { id } = req.params;
+    const query = await adminService.getDetailAdmin(id);
+    if (query) {
+      if (!query.code) {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+      return res.status(query.code).json(query);
+    }
+    res.status(500).json({
+      code: 500,
+      message: 'Internal server error',
+    });
+  },
+  updateAdmin: async (req, res) => {
     const err = validationResult(req);
     if (err.errors.length) {
       let messages = err.errors.map((m) => ({
@@ -100,8 +109,10 @@ module.exports = authController = {
       }));
       res.status(400).json(messages);
     } else {
-      const { email } = req.body;
-      const query = await authService.forgotPassword({ email });
+      const { name } = req.body;
+      const photo = req.file;
+      const photoUrl = photo ? photo.path : '';
+      const query = await adminService.updateProfileAdmin({ name, photoUrl }, req.decoded);
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -117,41 +128,7 @@ module.exports = authController = {
       });
     }
   },
-  changeForgotPassword: async (req, res) => {
-    const err = validationResult(req);
-    if (err.errors.length) {
-      let messages = err.errors.map((m) => ({
-        message: m.msg,
-      }));
-      res.status(400).json(messages);
-    } else {
-      let token = req.params.token;
-      const { password, confirmPassword } = req.body;
-      if (password !== confirmPassword) {
-        res.status(400).json({
-          code: 400,
-          message: 'Password confirmation not match',
-        });
-      }
-      const query = await authService.changePassword(password, token);
-      if (query) {
-        console.log(query);
-        if (!query.code) {
-          return res.status(500).json({
-            code: 500,
-            message: 'Internal server error',
-          });
-        }
-        return res.status(query.code).json(query);
-      } else {
-        return res.status(500).json({
-          code: 500,
-          message: 'Internal server error',
-        });
-      }
-    }
-  },
-  changeUserPassword: async (req, res) => {
+  changePasswordAdmin: async (req, res) => {
     const err = validationResult(req);
     if (err.errors.length) {
       let messages = err.errors.map((m) => ({
@@ -166,7 +143,7 @@ module.exports = authController = {
           message: 'Password confirmation not match',
         });
       }
-      const query = await authService.changePasswordUser(password, req.decoded);
+      const query = await adminService.changePasswordAdmin({ oldPassword, password }, req.decoded);
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -182,5 +159,22 @@ module.exports = authController = {
         });
       }
     }
+  },
+  deleteAdmin: async (req, res) => {
+    const { id } = req.params;
+    const query = await adminService.deleteAdmin(id);
+    if (query) {
+      if (!query.code) {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+      return res.status(query.code).json(query);
+    }
+    res.status(500).json({
+      code: 500,
+      message: 'Internal server error',
+    });
   },
 };

@@ -4,7 +4,7 @@ const adminSchema = new mongoose.Schema({
   adminId: {
     type: String,
   },
-  nama: {
+  name: {
     type: String,
   },
   email: {
@@ -16,7 +16,8 @@ const adminSchema = new mongoose.Schema({
   },
   photoUrl: {
     type: String,
-    default: '',
+    default:
+      'https://res.cloudinary.com/mygalleryfile/image/upload/v1591678783/269-2697881_computer-icons-user-clip-art-transparent-png-icon_yi1dtt.png',
   },
   level: {
     type: Number,

@@ -4,7 +4,6 @@ const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 const sendVerificationEmail = require('../../middlewares/sendVerificationEmail');
 const sendForgotEmail = require('../../middlewares/sendForgotEmail');
-const { findOneAndUpdate } = require('../../models/Users');
 
 module.exports = authServices = {
   registerUser: async ({ nama, email, username, password }) => {
@@ -62,7 +61,7 @@ module.exports = authServices = {
   },
   loginUser: async ({ email, password }) => {
     try {
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email: email, deletedAt: null });
       if (!user)
         throw {
           code: 404,
@@ -82,8 +81,9 @@ module.exports = authServices = {
       const token = jwt.sign(
         {
           sub: user.userId,
-          nama: user.nama,
+          nama: user.name,
           role: 0,
+          level: null,
         },
         'minigames-infiniteroom',
         { expiresIn: '24h' }
@@ -107,7 +107,7 @@ module.exports = authServices = {
           code: 400,
           message: 'Token is invalid or expired',
         };
-      const checkVerify = await User.findOne({ userId: decoded.sub });
+      const checkVerify = await User.findOne({ userId: decoded.sub, deletedAt: null });
       if (checkVerify.isVerified) {
         return {
           code: 200,
@@ -184,7 +184,7 @@ module.exports = authServices = {
   },
   forgotPassword: async ({ email }) => {
     try {
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email: email, deletedAt: null });
       if (!user)
         throw {
           code: 404,
@@ -231,7 +231,10 @@ module.exports = authServices = {
           message: 'Internal server error',
         };
       }
-      const user = await User.findOneAndUpdate({ userId: decoded.sub }, { password: encPass });
+      const user = await User.findOneAndUpdate(
+        { userId: decoded.sub },
+        { password: encPass, editedAt: Date.now() }
+      );
       return {
         code: 200,
         message: 'Change password success',
@@ -243,23 +246,41 @@ module.exports = authServices = {
       return error;
     }
   },
-  changePasswordUser: async (password, decoded) => {
+  changePasswordUser: async ({ oldPassword, password }, decoded) => {
     try {
-      const encPass = await bcryptjs.hash(password, 10);
-      if (!encPass) {
+      const user = await User.findOne({ userId: decoded.sub, deletedAt: null });
+      if (!user) {
         throw {
-          code: 500,
-          message: 'Internal server error',
+          code: 404,
+          message: 'User not found',
         };
       }
-      const user = await User.findOneAndUpdate({ userId: decoded.sub }, { password: encPass });
-      return {
-        code: 200,
-        message: 'Change password success',
-        data: {
-          userId: user.userId,
-        },
-      };
+      const comparePass = await bcryptjs.compare(oldPassword, user.password);
+      if (!comparePass) {
+        throw {
+          code: 400,
+          message: 'Old password not same',
+        };
+      } else {
+        const encPass = await bcryptjs.hash(password, 10);
+        if (!encPass) {
+          throw {
+            code: 500,
+            message: 'Internal server error',
+          };
+        }
+        const user = await User.findOneAndUpdate(
+          { userId: decoded.sub },
+          { password: encPass, editedAt: Date.now() }
+        );
+        return {
+          code: 200,
+          message: 'Change password success',
+          data: {
+            userId: user.userId,
+          },
+        };
+      }
     } catch (error) {
       return error;
     }
