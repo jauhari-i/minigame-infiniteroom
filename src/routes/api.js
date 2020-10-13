@@ -1,15 +1,27 @@
 const router = require('express').Router();
 
 const basicAuth = require('../middlewares/basicAuth');
-const authValidator = require('../middlewares/validators/auth');
-const authController = require('../controllers/v1/authController');
 const requireAuth = require('../middlewares/requireAuth');
+const uploadImage = require('../middlewares/uploadImages');
 const allApi = require('express-list-endpoints');
+
+const authController = require('../controllers/v1/authController');
+const userController = require('../controllers/v1/userController');
+
+const authValidator = require('../middlewares/validators/auth');
+const userValidator = require('../middlewares/validators/users');
 
 router.get('/', (req, res) => {
   const api = allApi(router);
   res.status(200).json({ api: api });
 });
+
+router.get('/user/profile', requireAuth, userController.getProfileUser);
+router.put(
+  '/user/edit-profile',
+  [requireAuth, uploadImage.single('photos'), userValidator.updateUser],
+  userController.updateProfile
+);
 
 // auth
 router.post('/user/register', [basicAuth, authValidator.registerUser], authController.registerUser);

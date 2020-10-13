@@ -30,6 +30,21 @@ const userSchema = new mongoose.Schema({
   verifiedAt: {
     type: Date,
   },
+  city: {
+    type: String,
+    default: '',
+  },
+  province: {
+    type: String,
+    default: '',
+  },
+  birthday: {
+    type: Date,
+  },
+  online: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
