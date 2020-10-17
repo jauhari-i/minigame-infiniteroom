@@ -1,5 +1,4 @@
 const User = require('../../models/Users');
-const { v4: uuid } = require('uuid');
 
 module.exports = userServices = {
   getProfile: async (decoded) => {
@@ -40,7 +39,10 @@ module.exports = userServices = {
       return error;
     }
   },
-  updateProfile: async ({ name, username, city, province, photoUrl, birthday }, decoded) => {
+  updateProfile: async (
+    { name, username, city, province, photoUrl, birthday, phoneNumber },
+    decoded
+  ) => {
     try {
       const user = await User.findOne({ userId: decoded.sub, deletedAt: null });
       const url = photoUrl ? photoUrl : user.userPhotos;
@@ -53,6 +55,7 @@ module.exports = userServices = {
           province: province,
           userPhotos: url,
           birthday: birthday,
+          phoneNumber: phoneNumber,
           editedAt: Date.now(),
         }
       );

@@ -14,7 +14,7 @@ const gameSchema = new mongoose.Schema({
     type: String,
   },
   genre: {
-    type: Object,
+    type: Array,
   },
   price: {
     type: Number,
@@ -23,11 +23,21 @@ const gameSchema = new mongoose.Schema({
     type: String,
   },
   difficulty: {
-    type: String,
+    type: Number,
+  },
+  duration: {
+    type: Number,
+  },
+  capacity: {
+    type: Number,
   },
   rating: {
+    type: Number,
+    default: 0,
+  },
+  createdBy: {
     type: String,
-    default: '0',
+    default: '',
   },
   createdAt: {
     type: Date,

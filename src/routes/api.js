@@ -9,6 +9,8 @@ const uploadImage = require('../middlewares/uploadImages');
 const authController = require('../controllers/v1/authController');
 const userController = require('../controllers/v1/userController');
 const adminController = require('../controllers/v1/adminController');
+const gameController = require('../controllers/v1/gameController');
+const transaksiController = require('../controllers/v1/transaksiController');
 
 const authValidator = require('../middlewares/validators/auth');
 const userValidator = require('../middlewares/validators/users');
@@ -74,5 +76,20 @@ router.post(
 
 router.get('/verify/user/:token', authController.verifyUser);
 router.get('/verify/request/:token', authController.requestVerification);
+
+router.post(
+  '/game/create',
+  [requireAuth, uploadImage.fields([{ name: 'poster' }, { name: 'image' }]), isAdmin.cekAdmin],
+  gameController.addGame
+);
+
+router.get('/game/web', requireAuth, gameController.gameListDashboard);
+
+router.post('/transaction/checkout', requireAuth, transaksiController.createTransaction);
+router.post(
+  '/transaction/upload-bukti',
+  [requireAuth, uploadImage.single('bukti')],
+  transaksiController.uploadBukti
+);
 
 module.exports = router;

@@ -28,9 +28,9 @@ module.exports = userController = {
     } else {
       const photo = req.file;
       const photoUrl = photo ? photo.path : '';
-      const { name, username, city, province, birthday } = req.body;
+      const { name, username, city, province, birthday, phoneNumber } = req.body;
       const query = await userService.updateProfile(
-        { name, username, city, province, photoUrl, birthday },
+        { name, username, city, province, photoUrl, birthday, phoneNumber },
         req.decoded
       );
       if (query) {
