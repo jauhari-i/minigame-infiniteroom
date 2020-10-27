@@ -11,14 +11,17 @@ const userController = require('../controllers/v1/userController');
 const adminController = require('../controllers/v1/adminController');
 const gameController = require('../controllers/v1/gameController');
 const transaksiController = require('../controllers/v1/transaksiController');
+const cartController = require('../controllers/v1/cartController');
 
 const authValidator = require('../middlewares/validators/auth');
 const userValidator = require('../middlewares/validators/users');
 const adminValidator = require('../middlewares/validators/admin');
+const gameValidator = require('../middlewares/validators/game');
+const transaksiValidator = require('../middlewares/validators/transaksi');
 
 router.get('/', (req, res) => {
   const api = allApi(router);
-  res.status(200).json({ api: api });
+  res.status(200).json({ api: api, length: api.length });
 });
 
 router.post(
@@ -79,17 +82,64 @@ router.get('/verify/request/:token', authController.requestVerification);
 
 router.post(
   '/game/create',
-  [requireAuth, uploadImage.fields([{ name: 'poster' }, { name: 'image' }]), isAdmin.cekAdmin],
+  [
+    requireAuth,
+    uploadImage.fields([{ name: 'poster' }, { name: 'image' }]),
+    isAdmin.cekAdmin,
+    gameValidator.addGame,
+  ],
   gameController.addGame
 );
-
 router.get('/game/web', requireAuth, gameController.gameListDashboard);
+router.get('/game/list', [requireAuth, isAdmin.cekAdmin], gameController.gameListAdmin);
+router.get('/game/detail/:id', requireAuth, gameController.detailGame);
+router.put(
+  '/game/update/:id',
+  [
+    requireAuth,
+    uploadImage.fields([{ name: 'poster' }, { name: 'image' }]),
+    isAdmin.cekAdmin,
+    gameValidator.addGame,
+  ],
+  gameController.updateGame
+);
+router.delete('/game/delete/:id', [requireAuth, isAdmin.cekAdmin], gameController.deleteGame);
 
+router.get('/transaction/user', requireAuth, transaksiController.userTransaction);
+router.get(
+  '/transaction/list',
+  [requireAuth, isAdmin.cekAdmin],
+  transaksiController.listTransactionAll
+);
+router.get(
+  '/transaction/detail/:id',
+  [requireAuth, isAdmin.cekAdmin],
+  transaksiController.detailTransaction
+);
 router.post('/transaction/checkout', requireAuth, transaksiController.createTransaction);
 router.post(
   '/transaction/upload-bukti',
   [requireAuth, uploadImage.single('bukti')],
   transaksiController.uploadBukti
 );
+router.put(
+  '/transaction/accept/:id',
+  [requireAuth, isAdmin.cekAdmin],
+  transaksiController.confirmTransaction
+);
+router.put(
+  '/transaction/reject/:id',
+  [requireAuth, isAdmin.cekAdmin, transaksiValidator.rejectTransaction],
+  transaksiController.rejectTransaction
+);
+router.delete(
+  '/transaction/delete/:id',
+  [requireAuth, isAdmin.cekSuperAdmin],
+  transaksiController.deleteTranaction
+);
+
+router.get('/cart/user', requireAuth, cartController.getCartUser);
+router.get('/cart/add/:id', requireAuth, cartController.addCartGames);
+router.get('/cart/remove/:id', requireAuth, cartController.removeCartGames);
 
 module.exports = router;

@@ -54,11 +54,45 @@ module.exports = gameService = {
       return error;
     }
   },
-  getGameList: async () => {},
+  getGameList: async () => {
+    try {
+      const games = await Game.find({ deletedAt: null });
+      if (games.length === 0) {
+        return {
+          code: 200,
+          message: 'Get games success',
+          data: [],
+        };
+      } else {
+        const gameData = await games.map((item) => ({
+          gameId: item.gameId,
+          title: item.title,
+          posterUrl: item.posterUrl,
+          imageUrl: item.imageUrl,
+          genre: item.genre,
+          price: item.price,
+          description: item.description,
+          difficulty: item.difficulty,
+          duration: item.duration,
+          capacity: item.capacity,
+          rating: item.rating,
+          createdAt: item.createdAt,
+          createdBy: item.createdBy,
+        }));
+        return {
+          code: 200,
+          message: 'Get games success',
+          data: gameData,
+        };
+      }
+    } catch (error) {
+      return error;
+    }
+  },
   getGameListWeb: async (decoded) => {
     try {
       const userGame = await UserGame.find({ userId: decoded.sub });
-      const games = await Game.find();
+      const games = await Game.find({ deletedAt: null });
       if (games.length === 0) {
         return {
           code: 200,
@@ -96,6 +130,7 @@ module.exports = gameService = {
                 rating: game.rating,
                 status: 1,
                 price: game.price,
+                code: user.code,
               });
             } else {
               gamesData.push({
@@ -121,7 +156,105 @@ module.exports = gameService = {
       return error;
     }
   },
-  getDetailGame: async () => {},
-  editGame: async () => {},
-  deleteGame: async () => {},
+  getDetailGame: async (id) => {
+    try {
+      const game = await Game.findOne({ gameId: id, deletedAt: null });
+      if (!game) {
+        throw {
+          code: 404,
+          message: 'Game not found',
+        };
+      }
+      return {
+        code: 200,
+        message: 'Get detail game success',
+        data: {
+          gameId: game.gameId,
+          title: game.title,
+          posterUrl: game.posterUrl,
+          imageUrl: game.imageUrl,
+          genre: game.genre,
+          price: game.price,
+          description: game.description,
+          difficulty: game.difficulty,
+          duration: game.duration,
+          capacity: game.capacity,
+          rating: game.rating,
+          createdAt: game.createdAt,
+          createdBy: game.createdBy,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  },
+  editGame: async (
+    { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration },
+    id
+  ) => {
+    try {
+      const oldData = await Game.findOne({ gameId: id, deletedAt: null });
+      if (!oldData) {
+        throw {
+          code: 404,
+          message: 'Game not found',
+        };
+      } else {
+        const posterUrls = posterUrl ? posterUrl : oldData.posterUrl;
+        const imageUrls = imageUrl ? imageUrl : oldData.imageUrl;
+        const query = await Game.updateOne(
+          {
+            gameId: id,
+            deletedAt: null,
+          },
+          {
+            title,
+            posterUrl: posterUrls,
+            imageUrl: imageUrls,
+            genre,
+            price,
+            description,
+            difficulty,
+            capacity,
+            duration,
+            editedAt: Date.now(),
+          }
+        );
+        if (query) {
+          return {
+            code: 200,
+            message: 'Game updated',
+          };
+        } else {
+          return {
+            code: 400,
+            message: 'Update game failed',
+          };
+        }
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+  deleteGame: async (id) => {
+    try {
+      const query = await Game.updateOne(
+        { gameId: id, deletedAt: null },
+        { deletedAt: Date.now(), editedAt: Date.now() }
+      );
+      if (query) {
+        return {
+          code: 200,
+          message: 'Game Deleted',
+        };
+      } else {
+        return {
+          code: 400,
+          message: 'Delete game failed',
+        };
+      }
+    } catch (error) {
+      return error;
+    }
+  },
 };

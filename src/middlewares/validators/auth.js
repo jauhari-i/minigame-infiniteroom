@@ -3,7 +3,7 @@ const User = require('../../models/Users');
 
 module.exports = authValidator = {
   registerUser: [
-    check('nama').not().isEmpty().withMessage('Nama tidak boleh kosong'),
+    check('name').not().isEmpty().withMessage('Nama tidak boleh kosong'),
     check('email').custom((val) => {
       if (!val) {
         return Promise.reject('Email tidak boleh kosong');

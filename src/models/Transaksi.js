@@ -18,6 +18,12 @@ const transaksiSchema = new mongoose.Schema({
   buktiPembayaran: {
     type: String,
   },
+  paymentToken: {
+    type: String,
+  },
+  rejectedReason: {
+    type: String,
+  },
   userId: {
     type: String,
   },

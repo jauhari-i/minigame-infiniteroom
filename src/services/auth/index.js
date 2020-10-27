@@ -16,7 +16,7 @@ module.exports = authServices = {
         };
       const user = await User.create({
         userId: uuid(),
-        nama: nama,
+        name: nama,
         email: email,
         username: username,
         password: encPass,
@@ -35,11 +35,10 @@ module.exports = authServices = {
         { expiresIn: '30m' }
       );
       await sendVerificationEmail(email, token, (err, info) => {
-        console.log(info);
         if (err) {
           return {
             code: 400,
-            message: emails.message,
+            message: err.message,
           };
         }
         return;

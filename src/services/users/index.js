@@ -30,6 +30,7 @@ module.exports = userServices = {
           city: user.city,
           province: user.province,
           photoUrl: user.userPhotos,
+          phoneNumber: user.phoneNumber,
           age: age,
           birthday: user.birthday,
           createdAt: user.createdAt,
@@ -91,6 +92,7 @@ module.exports = userServices = {
         city: u.city,
         province: u.province,
         birthday: u.birthday,
+        phoneNumber: u.phoneNumber,
         isVerified: u.isVerified,
         createdAt: u.createdAt,
       }));
