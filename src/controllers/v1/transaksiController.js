@@ -1,5 +1,7 @@
-const transaksiService = require('../../services/Transaksi');
+const { transactionServices } = require('../../services/v1');
 const { validationResult } = require('express-validator');
+
+const transaksiService = transactionServices;
 
 module.exports = transaksiController = {
   createTransaction: async (req, res) => {

@@ -1,9 +1,9 @@
-const User = require('../../models/Users');
+const User = require('../../../models/v1/Users');
 const bcryptjs = require('bcryptjs');
 const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
-const sendVerificationEmail = require('../../middlewares/sendVerificationEmail');
-const sendForgotEmail = require('../../middlewares/sendForgotEmail');
+const sendVerificationEmail = require('../../../middlewares/sendVerificationEmail');
+const sendForgotEmail = require('../../../middlewares/sendForgotEmail');
 
 module.exports = authServices = {
   registerUser: async ({ nama, email, username, password }) => {

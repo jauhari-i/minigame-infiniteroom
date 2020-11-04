@@ -1,4 +1,4 @@
-const adminService = require('../../services/admins');
+const { adminServices } = require('../../services/v1');
 const { validationResult } = require('express-validator');
 
 module.exports = adminController = {
@@ -11,7 +11,7 @@ module.exports = adminController = {
       res.status(400).json(messages);
     } else {
       const { name, email, password } = req.body;
-      const query = await adminService.registerAdmin({ name, email, password });
+      const query = await adminServices.registerAdmin({ name, email, password });
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -36,7 +36,7 @@ module.exports = adminController = {
       res.status(400).json(messages);
     } else {
       const { email, password } = req.body;
-      const query = await adminService.loginAdmin({ email, password });
+      const query = await adminServices.loginAdmin({ email, password });
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -53,7 +53,7 @@ module.exports = adminController = {
     }
   },
   getProfile: async (req, res) => {
-    const query = await adminService.getProfile(req.decoded);
+    const query = await adminServices.getProfile(req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
@@ -69,7 +69,7 @@ module.exports = adminController = {
     });
   },
   getListAdmin: async (req, res) => {
-    const query = await adminService.getListAdmin(req.decoded);
+    const query = await adminServices.getListAdmin(req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
@@ -86,7 +86,7 @@ module.exports = adminController = {
   },
   getDetailAdmin: async (req, res) => {
     const { id } = req.params;
-    const query = await adminService.getDetailAdmin(id);
+    const query = await adminServices.getDetailAdmin(id);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
@@ -112,7 +112,7 @@ module.exports = adminController = {
       const { name } = req.body;
       const photo = req.file;
       const photoUrl = photo ? photo.path : '';
-      const query = await adminService.updateProfileAdmin({ name, photoUrl }, req.decoded);
+      const query = await adminServices.updateProfileAdmin({ name, photoUrl }, req.decoded);
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -143,7 +143,7 @@ module.exports = adminController = {
           message: 'Password confirmation not match',
         });
       }
-      const query = await adminService.changePasswordAdmin({ oldPassword, password }, req.decoded);
+      const query = await adminServices.changePasswordAdmin({ oldPassword, password }, req.decoded);
       if (query) {
         if (!query.code) {
           return res.status(500).json({
@@ -162,7 +162,7 @@ module.exports = adminController = {
   },
   deleteAdmin: async (req, res) => {
     const { id } = req.params;
-    const query = await adminService.deleteAdmin(id);
+    const query = await adminServices.deleteAdmin(id);
     if (query) {
       if (!query.code) {
         return res.status(500).json({

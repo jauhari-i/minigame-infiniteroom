@@ -1,5 +1,7 @@
-const userService = require('../../services/users');
+const { userServices } = require('../../services/v1');
 const { validationResult } = require('express-validator');
+
+const userService = userServices;
 
 module.exports = userController = {
   getProfileUser: async (req, res) => {

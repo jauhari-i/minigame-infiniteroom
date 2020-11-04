@@ -1,5 +1,7 @@
-const gameService = require('../../services/games');
+const { gameServices } = require('../../services/v1');
 const { validationResult } = require('express-validator');
+
+const gameService = gameServices;
 
 module.exports = gameController = {
   addGame: async (req, res) => {

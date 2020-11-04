@@ -1,4 +1,4 @@
-const User = require('../../models/Users');
+const User = require('../../../models/v1/Users');
 
 module.exports = userServices = {
   getProfile: async (decoded) => {

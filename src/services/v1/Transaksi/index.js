@@ -1,10 +1,10 @@
 const { v4: uuid } = require('uuid');
-const Game = require('../../models/Games');
-const User = require('../../models/Users');
-const Admin = require('../../models/Admin');
-const UserGame = require('../../models/UserGame');
-const Transaksi = require('../../models/Transaksi');
-const Cart = require('../../models/Cart');
+const Game = require('../../../models/v1/Games');
+const User = require('../../../models/v1/Users');
+const Admin = require('../../../models/v1/Admin');
+const UserGame = require('../../../models/v1/UserGame');
+const Transaksi = require('../../../models/v1/Transaksi');
+const Cart = require('../../../models/v1/Cart');
 const jwt = require('jsonwebtoken');
 
 module.exports = transaksiService = {
@@ -231,7 +231,7 @@ module.exports = transaksiService = {
         const query = await Transaksi.updateOne(
           { transaksiId: transaksi.transaksiId },
           {
-            status: 4,
+            status: 2,
             adminId: decoded.sub,
             reasonRejected: reason,
             editedAt: Date.now(),

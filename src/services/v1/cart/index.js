@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
-const Cart = require('../../models/Cart');
-const Game = require('../../models/Games');
+const Cart = require('../../../models/v1/Cart');
+const Game = require('../../../models/v1/Games');
 
 module.exports = cartService = {
   getCart: async (decoded) => {
@@ -18,6 +18,7 @@ module.exports = cartService = {
           data: {
             cartId: cart.cartId,
             games: cart.games,
+            timePlay: cart.timePlay,
             total: 0,
           },
         };
@@ -45,6 +46,8 @@ module.exports = cartService = {
             data: {
               cartId: cartUser.cartId,
               games: [],
+              timePlay: cartUser.timePlay,
+              members: cartUser.members,
               total: 0,
             },
           };
@@ -61,6 +64,8 @@ module.exports = cartService = {
             data: {
               cartId: cartUser.cartId,
               games: data,
+              timePlay: cartUser.timePlay,
+              members: cartUser.members,
               total: total.reduce((a, b) => a + b, 0),
             },
           };

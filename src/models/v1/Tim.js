@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
 
-const cartSchema = new mongoose.Schema({
-  cartId: {
+const teamSchema = new mongoose.Schema({
+  teamId: {
     type: String,
   },
-  games: {
-    type: Array,
-    default: [],
+  teamName: {
+    type: String,
   },
-  userId: {
+  teamLogo: {
+    type: String,
+  },
+  members: {
+    type: Array,
+  },
+  code: {
     type: String,
   },
   createdAt: {
@@ -24,4 +29,4 @@ const cartSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('cart', cartSchema);
+module.exports = mongoose.model('tim', teamSchema);

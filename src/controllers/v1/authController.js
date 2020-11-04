@@ -1,5 +1,7 @@
-const authService = require('../../services/auth');
+const { authServices } = require('../../services/v1');
 const { validationResult } = require('express-validator');
+
+const authService = authServices;
 
 module.exports = authController = {
   registerUser: async (req, res) => {

@@ -1,7 +1,7 @@
 const { v4: uuid } = require('uuid');
-const Game = require('../../models/Games');
-const Admin = require('../../models/Admin');
-const UserGame = require('../../models/UserGame');
+const Game = require('../../../models/v1/Games');
+const Admin = require('../../../models/v1/Admin');
+const UserGame = require('../../../models/v1/UserGame');
 
 module.exports = gameService = {
   addGame: async (

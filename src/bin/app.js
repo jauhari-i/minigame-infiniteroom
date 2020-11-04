@@ -8,7 +8,6 @@ const path = require('path');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const helper = require('../helpers/socket');
 
 app.use(cors());
 app.use(bp.json());
@@ -33,12 +32,13 @@ mongoose.connect(
   }
 );
 
+app.use('/api', require('../routes/api'));
+
 app.use(express.static(path.join(__dirname, '../public')));
+
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
-
-app.use('/api', require('../routes/api'));
 
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
@@ -51,22 +51,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-io.use((socket, next) => {
-  if (socket.handshake.query && socket.handshake.query.token) {
-    const auth = helper.cekAuth(socket.handshake.query.token);
-    if (!auth) {
-      return next(new Error('Authentication error'));
-    }
-    next();
-  } else {
-    next(new Error('Authentication error'));
-  }
-}).on('connection', (socket) => {
-  console.log('user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+require('../helpers/socket')(io);
 
 const port = process.env.PORT || 8000;
 server.listen(port, () => console.log(`Minigames start on port ${port}!`));

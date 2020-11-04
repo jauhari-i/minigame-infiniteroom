@@ -12,9 +12,18 @@ const gamePlaySchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  teamName: {
+    type: String,
+  },
+  teamLogo: {
+    type: String,
+  },
   members: {
     type: Array,
     default: [],
+  },
+  code: {
+    type: String,
   },
   time: {
     type: Number,
