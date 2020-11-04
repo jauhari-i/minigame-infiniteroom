@@ -1,4 +1,4 @@
-const { authServices } = require('../../services/v1');
+const { authServices } = require('../../services/v2');
 const { validationResult } = require('express-validator');
 
 const authService = authServices;
@@ -168,7 +168,7 @@ module.exports = authController = {
           message: 'Password confirmation not match',
         });
       }
-      const query = await authService.changePasswordUser({ oldPassword, password }, req.decoded);
+      const query = await authService.changePasswordUser(password, req.decoded);
       if (query) {
         if (!query.code) {
           return res.status(500).json({

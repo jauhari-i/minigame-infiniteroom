@@ -1,4 +1,4 @@
-const User = require('../../../models/v1/Users');
+const User = require('../../../models/v2/Users');
 const bcryptjs = require('bcryptjs');
 const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
@@ -281,7 +281,6 @@ module.exports = authServices = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },
