@@ -1,5 +1,5 @@
 const { check } = require('express-validator');
-const User = require('../../../models/v1/Users');
+const User = require('../../../models/v2/Users');
 
 module.exports = authValidator = {
   registerUser: [

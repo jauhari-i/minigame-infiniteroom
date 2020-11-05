@@ -101,6 +101,8 @@ router.put(
 );
 router.delete('/game/delete/:id', [requireAuth, isAdmin.cekAdmin], gameController.deleteGame);
 
+router.get('/cart/user', requireAuth, cartController.getUserCart);
 router.post('/cart/add', requireAuth, cartController.addItemsToCart);
+router.put('/cart/remove/:cartItemId', requireAuth, cartController.removeItemFromCart);
 
 module.exports = router;
