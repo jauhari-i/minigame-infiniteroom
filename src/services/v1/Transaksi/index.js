@@ -192,10 +192,12 @@ module.exports = transaksiService = {
               }
             })
           );
-          return {
-            code: 200,
-            message: 'Transaction Confirmed',
-          };
+          if (transactionGames) {
+            return {
+              code: 200,
+              message: 'Transaction Confirmed',
+            };
+          }
         } else {
           throw {
             code: 500,

@@ -19,6 +19,7 @@ const authValidator = require('../../middlewares/validators/v2/auth');
 const userValidator = require('../../middlewares/validators/v2/users');
 const adminValidator = require('../../middlewares/validators/v2/admin');
 const gameValidator = require('../../middlewares/validators/v2/game');
+const transactionValidator = require('../../middlewares/validators/v2/transaksi');
 
 router.post(
   '/admin/register',
@@ -104,5 +105,34 @@ router.delete('/game/delete/:id', [requireAuth, isAdmin.cekAdmin], gameControlle
 router.get('/cart/user', requireAuth, cartController.getUserCart);
 router.post('/cart/add', requireAuth, cartController.addItemsToCart);
 router.put('/cart/remove/:cartItemId', requireAuth, cartController.removeItemFromCart);
+
+router.get(
+  '/transaction/list',
+  [requireAuth, isAdmin.cekAdmin],
+  transactionController.getListTransaction
+);
+router.post('/transaction/checkout', requireAuth, transactionController.checkoutTransactionUser);
+router.get('/transaction/user', requireAuth, transactionController.getUserTransaction);
+router.get('/transaction/detail/:id', requireAuth, transactionController.getDetailTransaction);
+router.delete(
+  '/transaction/delete/:id',
+  [requireAuth, isAdmin.cekSuperAdmin],
+  transactionController.deleteTransactionData
+);
+router.put(
+  '/transaction/accept/:id',
+  [requireAuth, isAdmin.cekAdmin],
+  transactionController.acceptUserTransaction
+);
+router.put(
+  '/transaction/reject/:id',
+  [requireAuth, isAdmin.cekAdmin, transactionValidator.rejectTransaction],
+  transactionController.rejectUserTransaction
+);
+router.put(
+  '/transaction/upload-bukti/:id',
+  [requireAuth, uploadImage.single('file')],
+  transactionController.uploadTransaction
+);
 
 module.exports = router;

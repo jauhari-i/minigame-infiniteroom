@@ -1,7 +1,6 @@
 const Cart = require('../../../models/v2/Cart');
 const CartItem = require('../../../models/v2/CartItem');
 const Game = require('../../../models/v2/Games');
-const User = require('../../../models/v2/Users');
 const { v4: uuid } = require('uuid');
 
 module.exports = services = {

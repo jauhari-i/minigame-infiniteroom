@@ -281,7 +281,6 @@ module.exports = authServices = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },

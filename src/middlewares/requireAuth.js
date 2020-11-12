@@ -7,12 +7,14 @@ module.exports = checkToken = async (req, res, next) => {
       message: 'Login terlebih dahulu',
     });
   await jwt.verify(token.replace('Bearer ', ''), 'minigames-infiniteroom', (err, decoded) => {
-    err &&
+    if (err) {
       res.status(401).json({
         code: 401,
         message: 'Token tidak valid, silahkan login kembali',
       });
-    req.decoded = decoded;
-    next();
+    } else {
+      req.decoded = decoded;
+      next();
+    }
   });
 };
