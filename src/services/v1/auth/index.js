@@ -4,6 +4,7 @@ const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 const sendVerificationEmail = require('../../../middlewares/sendVerificationEmail');
 const sendForgotEmail = require('../../../middlewares/sendForgotEmail');
+const v1 = 'v1';
 
 module.exports = authServices = {
   registerUser: async ({ nama, email, username, password }) => {
@@ -34,7 +35,7 @@ module.exports = authServices = {
         'minigames-verification',
         { expiresIn: '30m' }
       );
-      await sendVerificationEmail(email, token, (err, info) => {
+      await sendVerificationEmail(email, v1, token, (err, info) => {
         if (err) {
           return {
             code: 400,
@@ -164,7 +165,7 @@ module.exports = authServices = {
           message: 'User already verified',
         };
       }
-      await sendVerificationEmail(user.email, newToken, (err, info) => {
+      await sendVerificationEmail(user.email, v1, newToken, (err, info) => {
         if (err) {
           throw {
             code: 400,
@@ -197,7 +198,7 @@ module.exports = authServices = {
         'minigames-forgot-password',
         { expiresIn: '1h' }
       );
-      await sendForgotEmail(email, token, (err, info) => {
+      await sendForgotEmail(email, v1, token, (err, info) => {
         if (err) {
           return {
             code: 400,
