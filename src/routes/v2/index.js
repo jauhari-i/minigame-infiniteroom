@@ -135,4 +135,13 @@ router.put(
   transactionController.uploadTransaction
 );
 
+router.post('/join/game', requireAuth, leaderboardController.joinUserGame);
+router.post('/save/game', requireAuth, leaderboardController.saveUserGame);
+router.get(
+  '/generate/code/:id',
+  [requireAuth, isAdmin.cekAdmin],
+  leaderboardController.generateNewCode
+);
+router.get('/leaderboard/sort/:sort', requireAuth, leaderboardController.getLeaderboardList);
+
 module.exports = router;

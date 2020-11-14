@@ -135,5 +135,65 @@ module.exports = leaderBoardService = {
       return error;
     }
   },
-  getLeaderboard: async (sort) => {},
+  getLeaderboard: async (sort) => {
+    try {
+      const leaderboard = await LeaderBoard.find({ deletedAt: null });
+      const leaderboardData = await Promise.all(
+        leaderboard.map(async (item) => {
+          return {
+            leaderBoardId: item.leaderBoardId,
+            leaderName: item.leaderName,
+            members: item.members,
+            gameId: item.gameId,
+            gameDetail: item.gameDetail,
+            code: item.code,
+            time: time,
+            score: item.totalScore,
+            createdAt: item.createdAt,
+          };
+        })
+      );
+      if (sort === 'date') {
+        const newArr = leaderboardData.sort((a, b) => {
+          if (new Date(a.createdAt) < new Date(b.createdAt)) return -1;
+          if (new Date(a.createdAt) > new Date(b.createdAt)) return 1;
+          return 0;
+        });
+        return {
+          code: 200,
+          message: 'get leaderboard success',
+          data: newArr,
+        };
+      } else if (sort === 'game') {
+        const newArr = leaderboardData.sort((a, b) =>
+          a.gameDetail.title.localeCompare(b.gameDetail.title)
+        );
+        return {
+          code: 200,
+          message: 'get leaderboard success',
+          data: newArr,
+        };
+      } else if (sort === 'leader') {
+        const newArr = leaderboardData.sort((a, b) => a.leaderName.localeCompare(b.leaderName));
+        return {
+          code: 200,
+          message: 'get leaderboard success',
+          data: newArr,
+        };
+      } else {
+        const newArr = leaderboardData.sort((a, b) => {
+          if (a.score < b.score) return -1;
+          if (a.score > b.score) return 1;
+          return 0;
+        });
+        return {
+          code: 200,
+          message: 'get leaderboard success',
+          data: newArr,
+        };
+      }
+    } catch (error) {
+      return error;
+    }
+  },
 };

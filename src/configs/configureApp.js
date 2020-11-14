@@ -28,12 +28,6 @@ module.exports = (app) => {
       stream: logger.stream,
     })
   );
-  app.use('/api', require('../routes/api'));
-  app.use(express.static(path.join(__dirname, '../public')));
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-  });
-
   app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -43,5 +37,11 @@ module.exports = (app) => {
       code: 404,
     });
     next();
+  });
+
+  app.use('/api', require('../routes/api'));
+  app.use(express.static(path.join(__dirname, '../public')));
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
   });
 };
