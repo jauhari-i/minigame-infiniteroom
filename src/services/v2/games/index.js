@@ -5,7 +5,7 @@ const UserGame = require('../../../models/v2/UserGame');
 
 module.exports = gameService = {
   addGame: async (
-    { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration },
+    { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration, url },
     decoded
   ) => {
     try {
@@ -27,6 +27,7 @@ module.exports = gameService = {
         difficulty,
         capacity,
         duration,
+        url,
         createdBy: admin.name,
       });
       if (!game)
@@ -48,6 +49,7 @@ module.exports = gameService = {
           difficulty: game.difficulty,
           capacity: game.capacity,
           duration: game.duration,
+          url: game.url,
         },
       };
     } catch (error) {
@@ -76,6 +78,7 @@ module.exports = gameService = {
           duration: item.duration,
           capacity: item.capacity,
           rating: item.rating,
+          url: item.url,
           createdAt: item.createdAt,
           createdBy: item.createdBy,
         }));
@@ -110,6 +113,7 @@ module.exports = gameService = {
           rating: item.rating,
           status: 0,
           price: item.price,
+          url: item.url,
         }));
         return {
           code: 200,
@@ -130,6 +134,7 @@ module.exports = gameService = {
                 rating: game.rating,
                 status: 1,
                 price: game.price,
+                url: game.url,
                 code: user.code,
               });
             } else {
@@ -142,6 +147,7 @@ module.exports = gameService = {
                 rating: game.rating,
                 status: 0,
                 price: game.price,
+                url: game.url,
               });
             }
           });
@@ -180,6 +186,7 @@ module.exports = gameService = {
           duration: game.duration,
           capacity: game.capacity,
           rating: game.rating,
+          url: game.url,
           createdAt: game.createdAt,
           createdBy: game.createdBy,
         },

@@ -21,7 +21,7 @@ module.exports = gameController = {
       files.image.map((item) => {
         return (imageUrl = item.path);
       });
-      const { title, genre, price, description, difficulty, capacity, duration } = req.body;
+      const { title, genre, price, description, difficulty, capacity, duration, url } = req.body;
       const query = await gameService.addGame(
         {
           title,
@@ -33,6 +33,7 @@ module.exports = gameController = {
           difficulty,
           capacity,
           duration,
+          url,
         },
         req.decoded
       );
@@ -118,7 +119,7 @@ module.exports = gameController = {
       files.image.map((item) => {
         return (imageUrl = item.path);
       });
-      const { title, genre, price, description, difficulty, capacity, duration } = req.body;
+      const { title, genre, price, description, difficulty, capacity, duration, url } = req.body;
       const query = await gameService.editGame(
         {
           title,
@@ -130,6 +131,7 @@ module.exports = gameController = {
           difficulty,
           capacity,
           duration,
+          url,
         },
         id
       );
