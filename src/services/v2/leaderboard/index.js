@@ -79,7 +79,7 @@ module.exports = leaderBoardService = {
       return error;
     }
   },
-  saveGame: async (time, userGameId, gameId, decoded) => {
+  saveGame: async (time, userGameId, gameId, teamName, teamLogo, decoded) => {
     try {
       const score = 100;
       const { sub } = decoded;
@@ -101,6 +101,8 @@ module.exports = leaderBoardService = {
           const createLeaderBoard = await LeaderBoard.create({
             leaderBoardId: uuid(),
             leaderName: userData.name,
+            teamName: teamName,
+            teamLogo: teamLogo,
             members: userGameData.detail.members,
             gameId: gameId,
             gameDetail: userGameData.detail,
@@ -115,6 +117,8 @@ module.exports = leaderBoardService = {
               data: {
                 leaderBoardId: createLeaderBoard.leaderBoardId,
                 leaderName: createLeaderBoard.leaderName,
+                teamName: createLeaderBoard.teamName,
+                teamLogo: createLeaderBoard.teamLogo,
                 members: createLeaderBoard.members,
                 gameId: gameId,
                 gameDetail: createLeaderBoard.gameDetail,
@@ -143,6 +147,8 @@ module.exports = leaderBoardService = {
           return {
             leaderBoardId: item.leaderBoardId,
             leaderName: item.leaderName,
+            teamName: item.teamName,
+            teamLogo: item.teamLogo,
             members: item.members,
             gameId: item.gameId,
             gameDetail: item.gameDetail,

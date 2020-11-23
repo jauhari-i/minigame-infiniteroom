@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const leaderBoardSchema = new mongoose.Schema({
   leaderBoardId: { type: String, default: '' },
   leaderName: { type: String, default: '' },
+  teamName: { type: String, default: '' },
+  teamIcon: { type: String, default: '' },
   members: { type: String, default: '' },
   gameId: { type: String, default: '' },
   gameDetail: { type: Object },
