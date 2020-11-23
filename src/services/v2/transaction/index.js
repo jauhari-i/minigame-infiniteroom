@@ -210,7 +210,7 @@ module.exports = services = {
                   userId: transactionData.userId,
                   gameId: item.cartGameId,
                   code: generateCode(8),
-                  detail: item.cartGameData,
+                  detail: item,
                 });
                 return userGameQuery;
               })
