@@ -199,6 +199,7 @@ module.exports = leaderBoardService = {
         };
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   },
