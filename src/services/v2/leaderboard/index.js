@@ -153,7 +153,7 @@ module.exports = leaderBoardService = {
             gameId: item.gameId,
             gameDetail: item.gameDetail,
             code: item.code,
-            time: time,
+            time: item.time,
             score: item.totalScore,
             createdAt: item.createdAt,
           };
