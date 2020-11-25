@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const leaderBoardSchema = new mongoose.Schema({
   leaderBoardId: { type: String, default: '' },
   leaderName: { type: String, default: '' },
-  members: { type: String, default: '' },
+  teamName: { type: String, default: '' },
+  teamIcon: { type: String, default: '' },
+  members: { type: Array, default: [] },
   gameId: { type: String, default: '' },
   gameDetail: { type: Object },
   code: { type: String, default: '' },
@@ -22,4 +24,4 @@ const leaderBoardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('leaderboard', leaderBoardSchema);
+module.exports = mongoose.model('leaderboardv2', leaderBoardSchema);

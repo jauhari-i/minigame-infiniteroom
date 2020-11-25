@@ -35,6 +35,10 @@ const gameSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  url: {
+    type: String,
+    default: '',
+  },
   createdBy: {
     type: String,
     default: '',

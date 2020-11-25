@@ -79,7 +79,7 @@ module.exports = leaderBoardService = {
       return error;
     }
   },
-  saveGame: async (time, userGameId, gameId, decoded) => {
+  saveGame: async (time, userGameId, gameId, teamName, teamLogo, decoded) => {
     try {
       const score = 100;
       const { sub } = decoded;
@@ -101,9 +101,11 @@ module.exports = leaderBoardService = {
           const createLeaderBoard = await LeaderBoard.create({
             leaderBoardId: uuid(),
             leaderName: userData.name,
-            members: userGameData.detail.members,
+            teamName: teamName,
+            teamIcon: teamLogo,
+            members: userGameData.detail[0].members,
             gameId: gameId,
-            gameDetail: userGameData.detail,
+            gameDetail: userGameData.detail[0],
             code: userGameData.code,
             time: time,
             score: totalScore,
@@ -115,6 +117,8 @@ module.exports = leaderBoardService = {
               data: {
                 leaderBoardId: createLeaderBoard.leaderBoardId,
                 leaderName: createLeaderBoard.leaderName,
+                teamName: createLeaderBoard.teamName,
+                teamIcon: createLeaderBoard.teamIcon,
                 members: createLeaderBoard.members,
                 gameId: gameId,
                 gameDetail: createLeaderBoard.gameDetail,
@@ -143,12 +147,14 @@ module.exports = leaderBoardService = {
           return {
             leaderBoardId: item.leaderBoardId,
             leaderName: item.leaderName,
+            teamName: item.teamName,
+            teamLogo: item.teamLogo,
             members: item.members,
             gameId: item.gameId,
             gameDetail: item.gameDetail,
             code: item.code,
-            time: time,
-            score: item.totalScore,
+            time: item.time,
+            score: item.score,
             createdAt: item.createdAt,
           };
         })
@@ -182,8 +188,8 @@ module.exports = leaderBoardService = {
         };
       } else {
         const newArr = leaderboardData.sort((a, b) => {
-          if (a.score < b.score) return -1;
-          if (a.score > b.score) return 1;
+          if (a.score > b.score) return -1;
+          if (a.score < b.score) return 1;
           return 0;
         });
         return {
@@ -193,6 +199,7 @@ module.exports = leaderBoardService = {
         };
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   },

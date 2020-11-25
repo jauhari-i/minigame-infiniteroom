@@ -7,5 +7,6 @@ module.exports = gameValidator = {
     check('difficulty').not().isEmpty().withMessage('Difficulty is required'),
     check('capacity').not().isEmpty().withMessage('Capacity is required'),
     check('duration').not().isEmpty().withMessage('Duration is required'),
+    check('url').not().isEmpty().withMessage('Url is required'),
   ],
 };

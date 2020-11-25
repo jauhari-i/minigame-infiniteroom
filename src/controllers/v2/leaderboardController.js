@@ -41,8 +41,8 @@ module.exports = controller = {
     });
   },
   saveUserGame: async (req, res) => {
-    const { time, userGameId, gameId } = req.body;
-    const query = await saveGame(time, userGameId, gameId, req.decoded);
+    const { time, userGameId, gameId, teamName, teamLogo } = req.body;
+    const query = await saveGame(time, userGameId, gameId, teamName, teamLogo, req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
