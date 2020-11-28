@@ -16,9 +16,8 @@ module.exports = sendVerificationEmail = async (email, version, token, cb) => {
     const data = {
       token: token,
       email: email,
-      link: 'https://minigame-infiniteroom.herokuapp.com/api/' + version + '/verify/user/' + token,
-      linkRequest:
-        'https://minigame-infiniteroom.herokuapp.com/api/' + version + '/verify/request/' + token,
+      link: 'https://infiniteroom.herokuapp.com/api/' + version + '/verify/user/' + token,
+      linkRequest: 'https://infiniteroom.herokuapp.com/api/' + version + '/verify/request/' + token,
     };
     const localData = {
       token: token,
