@@ -81,9 +81,8 @@ module.exports = leaderBoardService = {
   },
   saveGame: async (time, userGameId, gameId, teamName, teamLogo, decoded) => {
     try {
-      const score = 100;
       const { sub } = decoded;
-      const totalScore = time * score;
+      const totalScore = time;
       const userGameData = await UserGame.findOne({ userGameId: userGameId });
       if (!userGameData) {
         throw {
