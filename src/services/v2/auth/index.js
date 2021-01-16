@@ -35,7 +35,7 @@ module.exports = authServices = {
         'minigames-verification',
         { expiresIn: '30m' }
       );
-      await sendVerificationEmail(email, v2, token, (err, info) => {
+      await sendVerificationEmail(email, token, (err, info) => {
         if (err) {
           return {
             code: 400,
@@ -165,7 +165,7 @@ module.exports = authServices = {
           message: 'User already verified',
         };
       }
-      await sendVerificationEmail(user.email, v2, newToken, (err, info) => {
+      await sendVerificationEmail(user.email, newToken, (err, info) => {
         if (err) {
           throw {
             code: 400,
@@ -198,7 +198,7 @@ module.exports = authServices = {
         'minigames-forgot-password',
         { expiresIn: '1h' }
       );
-      await sendForgotEmail(email, v2, token, (err, info) => {
+      await sendForgotEmail(email, token, (err, info) => {
         if (err) {
           return {
             code: 400,
