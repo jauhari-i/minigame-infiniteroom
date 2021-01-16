@@ -16,16 +16,10 @@ module.exports = sendVerificationEmail = async (email, version, token, cb) => {
     const data = {
       token: token,
       email: email,
-      link: 'https://infiniteroom.herokuapp.com/api/' + version + '/verify/user/' + token,
-      linkRequest: 'https://infiniteroom.herokuapp.com/api/' + version + '/verify/request/' + token,
+      link: `http://minigames.tranceformasiindonesia.com/verification/?token=${token}`,
+      linkRequest: `http://minigames.tranceformasiindonesia.com/verification/?token=${token}&new=true`,
     };
-    const localData = {
-      token: token,
-      email: email,
-      link: 'http://localhost:8000/api/' + version + '/verify/user/' + token,
-      linkRequest: 'http://localhost:8000/api/' + version + '/verify/request' + token,
-    };
-    const htmlToSend = template(process.env.MODE === 'dev' ? localData : data);
+    const htmlToSend = template(data);
     const mailOptions = {
       from: `"Minigames Infiniteroom" <minigames@tranceformasiindonesia.com>`,
       to: email,

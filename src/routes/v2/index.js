@@ -74,8 +74,8 @@ router.post(
   authController.changeForgotPassword
 );
 
-router.get('/verify/user/:token', authController.verifyUser);
-router.get('/verify/request/:token', authController.requestVerification);
+router.get('/verify/user/:token', basicAuth, authController.verifyUser);
+router.get('/verify/request/:token', basicAuth, authController.requestVerification);
 
 router.post(
   '/game/create',
