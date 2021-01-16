@@ -17,7 +17,7 @@ module.exports = sendVerificationEmail = async (email, token, cb) => {
       token: token,
       email: email,
       link: `http://minigames.tranceformasiindonesia.com/change-password/?token=${token}`,
-      linkRequest: `http://minigames.tranceformasiindonesia.com/change-password/?token=${token}&new=true`,
+      linkRequest: `http://minigames.tranceformasiindonesia.com/change-password/?token=${token}&request=true`,
     };
     const htmlToSend = template(data);
     const mailOptions = {

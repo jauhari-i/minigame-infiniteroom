@@ -9,7 +9,7 @@ const readHtmlFile = (path, cb) => {
   });
 };
 
-module.exports = sendVerificationEmail = async (email, version, token, cb) => {
+module.exports = sendVerificationEmail = async (email, token, cb) => {
   readHtmlFile(path.join(__dirname, '../public/verificationMail.html'), (err, html) => {
     err && cb(err);
     const template = handlebars.compile(html);
@@ -17,7 +17,7 @@ module.exports = sendVerificationEmail = async (email, version, token, cb) => {
       token: token,
       email: email,
       link: `http://minigames.tranceformasiindonesia.com/verification/?token=${token}`,
-      linkRequest: `http://minigames.tranceformasiindonesia.com/verification/?token=${token}&new=true`,
+      linkRequest: `http://minigames.tranceformasiindonesia.com/verification/?token=${token}&request=true`,
     };
     const htmlToSend = template(data);
     const mailOptions = {
