@@ -7,7 +7,7 @@ const sendForgotEmail = require('../../../middlewares/sendForgotEmail');
 const v2 = 'v2';
 
 module.exports = authServices = {
-  registerUser: async ({ nama, email, username, password }) => {
+  registerUser: async ({ name, email, username, password }) => {
     try {
       const encPass = await bcryptjs.hash(password, 10);
       if (!encPass)
@@ -17,7 +17,7 @@ module.exports = authServices = {
         };
       const user = await User.create({
         userId: uuid(),
-        name: nama,
+        name: name,
         email: email,
         username: username,
         password: encPass,
@@ -30,7 +30,7 @@ module.exports = authServices = {
       const token = jwt.sign(
         {
           sub: user.userId,
-          nama: user.nama,
+          name: user.name,
         },
         'minigames-verification',
         { expiresIn: '30m' }
@@ -49,7 +49,7 @@ module.exports = authServices = {
         message: 'Register user success',
         data: {
           userId: user.userId,
-          nama: user.nama,
+          name: user.name,
           email: user.email,
           username: user.username,
           isVerified: user.isVerified,
@@ -81,7 +81,7 @@ module.exports = authServices = {
       const token = jwt.sign(
         {
           sub: user.userId,
-          nama: user.name,
+          name: user.name,
           role: 0,
           level: null,
         },
@@ -154,7 +154,7 @@ module.exports = authServices = {
       const newToken = jwt.sign(
         {
           sub: user.userId,
-          nama: user.nama,
+          name: user.name,
         },
         'minigames-verification',
         { expiresIn: '30m' }
