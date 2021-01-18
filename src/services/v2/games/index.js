@@ -162,7 +162,7 @@ module.exports = gameService = {
       return error;
     }
   },
-  getDetailGame: async (id) => {
+  getDetailGame: async (id, decoded) => {
     try {
       const game = await Game.findOne({ gameId: id, deletedAt: null });
       if (!game) {
@@ -171,26 +171,52 @@ module.exports = gameService = {
           message: 'Game not found',
         };
       }
-      return {
-        code: 200,
-        message: 'Get detail game success',
-        data: {
-          gameId: game.gameId,
-          title: game.title,
-          posterUrl: game.posterUrl,
-          imageUrl: game.imageUrl,
-          genre: game.genre,
-          price: game.price,
-          description: game.description,
-          difficulty: game.difficulty,
-          duration: game.duration,
-          capacity: game.capacity,
-          rating: game.rating,
-          url: game.url,
-          createdAt: game.createdAt,
-          createdBy: game.createdBy,
-        },
-      };
+      const usergame = await UserGame.findOne({ gameId: id, userId: decoded.sub });
+      if (usergame) {
+        return {
+          code: 200,
+          message: 'Get detail game success',
+          data: {
+            gameId: game.gameId,
+            title: game.title,
+            posterUrl: game.posterUrl,
+            imageUrl: game.imageUrl,
+            genre: game.genre,
+            price: game.price,
+            description: game.description,
+            difficulty: game.difficulty,
+            duration: game.duration,
+            capacity: game.capacity,
+            rating: game.rating,
+            url: game.url,
+            status: 1,
+            createdAt: game.createdAt,
+            createdBy: game.createdBy,
+          },
+        };
+      } else {
+        return {
+          code: 200,
+          message: 'Get detail game success',
+          data: {
+            gameId: game.gameId,
+            title: game.title,
+            posterUrl: game.posterUrl,
+            imageUrl: game.imageUrl,
+            genre: game.genre,
+            price: game.price,
+            description: game.description,
+            difficulty: game.difficulty,
+            duration: game.duration,
+            capacity: game.capacity,
+            rating: game.rating,
+            url: game.url,
+            status: 0,
+            createdAt: game.createdAt,
+            createdBy: game.createdBy,
+          },
+        };
+      }
     } catch (error) {
       return error;
     }

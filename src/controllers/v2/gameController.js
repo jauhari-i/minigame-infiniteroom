@@ -85,8 +85,11 @@ module.exports = gameController = {
     });
   },
   detailGame: async (req, res) => {
-    const { id } = req.params;
-    const query = await gameService.getDetailGame(id);
+    const {
+      decoded,
+      params: { id },
+    } = req;
+    const query = await gameService.getDetailGame(id, decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({
