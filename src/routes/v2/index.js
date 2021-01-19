@@ -46,7 +46,7 @@ router.put(
 );
 router.delete('/admin/:id', [requireAuth, isAdmin.cekSuperAdmin], adminController.deleteAdmin);
 
-router.get('/user/list', [requireAuth, isAdmin.cekAdmin], userController.getListUser);
+router.get('/user/list', requireAuth, userController.getListUser);
 router.get('/user/profile', requireAuth, userController.getProfileUser);
 router.put(
   '/user/edit-profile',
