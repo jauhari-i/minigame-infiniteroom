@@ -84,22 +84,10 @@ module.exports = userServices = {
           data: [],
         };
       }
-      const usersData = users.map((u) => ({
-        userId: u.userId,
-        name: u.name,
-        email: u.email,
-        username: u.username,
-        city: u.city,
-        province: u.province,
-        birthday: u.birthday,
-        phoneNumber: u.phoneNumber,
-        isVerified: u.isVerified,
-        createdAt: u.createdAt,
-      }));
       return {
         code: 200,
         message: 'Get users success',
-        data: usersData,
+        data: users,
       };
     } catch (error) {
       return error;
