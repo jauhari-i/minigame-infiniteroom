@@ -16,6 +16,13 @@ const userGameSchema = new mongoose.Schema({
   detail: {
     type: Array,
   },
+  active: {
+    type: Number,
+    default: 0,
+  },
+  activeUser: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

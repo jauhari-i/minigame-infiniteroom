@@ -7,24 +7,42 @@ module.exports = leaderBoardService = {
   joinGame: async (code, decoded) => {
     const { sub } = decoded;
     try {
-      const userGame = await UserGame.findOne({ code: code, userId: sub, deletedAt: null });
+      const userGame = await UserGame.findOne({ code: code, active: 0, deletedAt: null });
       if (!userGame) {
         throw {
           code: 404,
           message: 'Code game is invalid',
         };
       } else {
-        return {
-          code: 200,
-          message: 'Join game successful',
-          data: {
-            userGameId: userGame.userGameId,
-            userId: userGame.userId,
-            gameId: userGame.gameId,
-            detail: userGame.detail,
-            code: userGame.code,
-          },
-        };
+        const members = userGame.members;
+        const userIndex = members.findIndex((x) => x.userId === sub);
+        const userData = members[userIndex];
+
+        const updateUserGame = await UserGame.updateOne(
+          { userGameId: userGame.userGameId },
+          { active: 1, activeUser: userData.userId }
+        );
+
+        if (!updateUserGame) {
+          throw {
+            code: 500,
+            message: 'Internal server error',
+          };
+        } else {
+          return {
+            code: 200,
+            message: 'Join game successful',
+            data: {
+              userGameId: userGame.userGameId,
+              userId: userGame.userId,
+              gameId: userGame.gameId,
+              detail: userGame.detail,
+              members: userGame.members,
+              code: userGame.code,
+              activeUser: userData.userId,
+            },
+          };
+        }
       }
     } catch (error) {
       return error;
@@ -83,7 +101,10 @@ module.exports = leaderBoardService = {
     try {
       const { sub } = decoded;
       const totalScore = time;
-      const userGameData = await UserGame.findOne({ userGameId: userGameId });
+      const userGameData = await UserGame.findOneAndUpdate(
+        { userGameId: userGameId },
+        { active: 0, activeUser: '' }
+      );
       if (!userGameData) {
         throw {
           code: 404,
