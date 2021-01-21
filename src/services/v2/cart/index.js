@@ -203,28 +203,41 @@ module.exports = services = {
         }
       } else {
         const items = userCart.items;
-        const itemsData = await Promise.all(
-          items.map(async (itemId) => {
-            const cartItemData = await CartItem.findOne({ cartItemId: itemId });
+        if (items.length) {
+          const itemsData = await Promise.all(
+            items.map(async (itemId) => {
+              const cartItemData = await CartItem.findOne({ cartItemId: itemId });
+              return {
+                cartItemId: cartItemData.cartItemId,
+                cartGameId: cartItemData.cartGameId,
+                cartGameData: cartItemData.cartGameData,
+                members: cartItemData.members,
+                membersCount: cartItemData.membersCount,
+                dateTimePlay: cartItemData.dateTimePlay,
+                price: cartItemData.price,
+                createdAt: cartItemData.createdAt,
+              };
+            })
+          );
+          if (itemsData.length) {
             return {
-              cartItemId: cartItemData.cartItemId,
-              cartGameId: cartItemData.cartGameId,
-              cartGameData: cartItemData.cartGameData,
-              members: cartItemData.members,
-              membersCount: cartItemData.membersCount,
-              dateTimePlay: cartItemData.dateTimePlay,
-              price: cartItemData.price,
-              createdAt: cartItemData.createdAt,
+              code: 200,
+              message: 'Get cart success',
+              data: {
+                cartId: userCart.cartId,
+                items: itemsData,
+                total: userCart.total,
+                userId: userCart.userId,
+              },
             };
-          })
-        );
-        if (itemsData.length) {
+          }
+        } else {
           return {
             code: 200,
             message: 'Get cart success',
             data: {
               cartId: userCart.cartId,
-              items: itemsData,
+              items: [],
               total: userCart.total,
               userId: userCart.userId,
             },
