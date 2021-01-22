@@ -89,19 +89,27 @@ module.exports = services = {
                 message: 'Internal server error',
               };
             } else {
-              return {
-                code: 201,
-                message: 'Transaction success',
-                data: {
-                  paymentToken: token,
-                  transaksi: {
-                    transaksiId: transaksi.transaksiId,
-                    items: transaksi.items,
-                    total: transaksi.total,
-                    userId: transaksi.userId,
+              const updateTotal = await Cart.updateOne({ cartId: cartUser.cartId }, { total: 0 });
+              if (!updateTotal) {
+                throw {
+                  code: 500,
+                  message: 'Internal server error',
+                };
+              } else {
+                return {
+                  code: 201,
+                  message: 'Transaction success',
+                  data: {
+                    paymentToken: token,
+                    transaksi: {
+                      transaksiId: transaksi.transaksiId,
+                      items: transaksi.items,
+                      total: transaksi.total,
+                      userId: transaksi.userId,
+                    },
                   },
-                },
-              };
+                };
+              }
             }
           } else {
             throw {
