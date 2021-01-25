@@ -14,7 +14,8 @@ module.exports = leaderBoardService = {
           message: 'Code game is invalid',
         };
       } else {
-        const members = userGame.members;
+        const members = userGame.detail[0].members;
+        console.log(members);
         const userIndex = members.findIndex((x) => x.userId === sub);
         const userData = members[userIndex];
 
@@ -219,7 +220,6 @@ module.exports = leaderBoardService = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },
