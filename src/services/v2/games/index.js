@@ -313,7 +313,7 @@ module.exports = gameService = {
               active: item.active,
               code: item.code,
               activeUser: item.activeUser,
-              expired: item.detail[0].dateTimePlay < date.now() ? true : false,
+              expired: item.detail[0].dateTimePlay < Date.now() ? true : false,
               playingTime: item.detail[0].dateTimePlay
                 ? item.detail[0].dateTimePlay
                 : item.playingTime,
