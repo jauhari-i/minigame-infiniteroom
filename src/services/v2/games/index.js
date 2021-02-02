@@ -3,6 +3,7 @@ const Game = require('../../../models/v2/Games');
 const Admin = require('../../../models/v2/Admin');
 const UserGame = require('../../../models/v2/UserGame');
 const User = require('../../../models/v2/Users');
+const { date } = require('faker');
 
 module.exports = gameService = {
   addGame: async (
@@ -312,7 +313,10 @@ module.exports = gameService = {
               active: item.active,
               code: item.code,
               activeUser: item.activeUser,
-              playingDate: item.detail[0].dateTimePlay,
+              expired: item.detail[0].dateTimePlay < date.now() ? true : false,
+              playingTime: item.detail[0].dateTimePlay
+                ? item.detail[0].dateTimePlay
+                : item.playingTime,
               userDetail: {
                 userId: user.userId,
                 name: user.name,

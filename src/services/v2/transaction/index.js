@@ -219,6 +219,7 @@ module.exports = services = {
                   gameId: item.cartGameId,
                   code: generateCode(8),
                   detail: item,
+                  playingTime: item.dateTimePlay,
                 });
                 return userGameQuery;
               })

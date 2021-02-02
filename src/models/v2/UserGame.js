@@ -23,6 +23,9 @@ const userGameSchema = new mongoose.Schema({
   activeUser: {
     type: String,
   },
+  playingTime: {
+    type: Date,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
