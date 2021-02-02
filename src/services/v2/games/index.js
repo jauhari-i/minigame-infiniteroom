@@ -322,7 +322,7 @@ module.exports = gameService = {
                 province: user.province,
                 photoUrl: user.userPhotos,
                 phoneNumber: user.phoneNumber,
-                age: age,
+                age: user.age,
                 birthday: user.birthday,
                 createdAt: user.createdAt,
               },
