@@ -89,6 +89,7 @@ router.post(
 );
 router.get('/game/web', requireAuth, gameController.gameListDashboard);
 router.get('/game/list', [requireAuth, isAdmin.cekAdmin], gameController.gameListAdmin);
+router.get('/game/usergame', [requireAuth, isAdmin.cekAdmin], gameController.userGameList);
 router.get('/game/detail/:id', requireAuth, gameController.detailGame);
 router.put(
   '/game/update/:id',

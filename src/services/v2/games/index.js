@@ -2,6 +2,7 @@ const { v4: uuid } = require('uuid');
 const Game = require('../../../models/v2/Games');
 const Admin = require('../../../models/v2/Admin');
 const UserGame = require('../../../models/v2/UserGame');
+const User = require('../../../models/v2/Users');
 
 module.exports = gameService = {
   addGame: async (
@@ -284,6 +285,72 @@ module.exports = gameService = {
         return {
           code: 400,
           message: 'Delete game failed',
+        };
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+  getUserGamelist: async () => {
+    try {
+      const usersgames = await UserGame.find({ deletedAt: null });
+      if (usersgames.length === 0) {
+        return {
+          code: 200,
+          message: 'Get user game success',
+          data: [],
+        };
+      } else {
+        const data = await Promise.all(
+          usersgames.map(async (item) => {
+            const user = await User.findOne({ userId: item.userId, deletedAt: null });
+            const game = await Game.findOne({ gameId: item.gameId, deletedAt: null });
+            const rawData = {
+              userGameId: item.userGameId,
+              userId: item.userId,
+              gameId: item.gameId,
+              active: item.active,
+              code: item.code,
+              activeUser: item.activeUser,
+              playingDate: item.detail[0].dateTimePlay,
+              userDetail: {
+                userId: user.userId,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                city: user.city,
+                province: user.province,
+                photoUrl: user.userPhotos,
+                phoneNumber: user.phoneNumber,
+                age: age,
+                birthday: user.birthday,
+                createdAt: user.createdAt,
+              },
+              gameDetail: {
+                gameId: game.gameId,
+                title: game.title,
+                posterUrl: game.posterUrl,
+                imageUrl: game.imageUrl,
+                genre: game.genre,
+                price: game.price,
+                description: game.description,
+                difficulty: game.difficulty,
+                duration: game.duration,
+                capacity: game.capacity,
+                rating: game.rating,
+                url: game.url,
+                status: 1,
+                createdAt: game.createdAt,
+                createdBy: game.createdBy,
+              },
+            };
+            return rawData;
+          })
+        );
+        return {
+          code: 200,
+          message: 'Get user game success',
+          data,
         };
       }
     } catch (error) {

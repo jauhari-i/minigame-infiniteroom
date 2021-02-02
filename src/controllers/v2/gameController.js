@@ -170,4 +170,20 @@ module.exports = gameController = {
       message: 'Internal server error',
     });
   },
+  userGameList: async (req, res) => {
+    const query = await gameService.getUserGamelist();
+    if (query) {
+      if (!query.code) {
+        return res.status(500).json({
+          code: 500,
+          message: 'Internal server error',
+        });
+      }
+      return res.status(query.code).json(query);
+    }
+    res.status(500).json({
+      code: 500,
+      message: 'Internal server error',
+    });
+  },
 };
