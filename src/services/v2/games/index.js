@@ -3,7 +3,6 @@ const Game = require('../../../models/v2/Games');
 const Admin = require('../../../models/v2/Admin');
 const UserGame = require('../../../models/v2/UserGame');
 const User = require('../../../models/v2/Users');
-const { date } = require('faker');
 
 module.exports = gameService = {
   addGame: async (
@@ -123,44 +122,35 @@ module.exports = gameService = {
           data: gameData,
         };
       } else {
-        let gamesData = [];
-        userGame.map((user) => {
-          games.map((game) => {
-            if (game.gameId === user.gameId) {
-              gamesData.push({
-                gameId: game.gameId,
-                imageUrl: game.imageUrl,
-                posterUrl: game.posterUrl,
-                title: game.title,
-                genre: game.genre,
-                rating: game.rating,
-                status: 1,
-                price: game.price,
-                url: game.url,
-                code: user.code,
-              });
-            } else {
-              gamesData.push({
-                gameId: game.gameId,
-                imageUrl: game.imageUrl,
-                posterUrl: game.posterUrl,
-                title: game.title,
-                genre: game.genre,
-                rating: game.rating,
-                status: 0,
-                price: game.price,
-                url: game.url,
-              });
-            }
-          });
-        });
+        const gamesDatas = await Promise.all(
+          games.map(async (g) => {
+            const gameuser = await UserGame.findOne({
+              gameId: g.gameId,
+              userId: decoded.sub,
+              deletedAt: null,
+            });
+            return {
+              gameId: g.gameId,
+              imageUrl: g.imageUrl,
+              posterUrl: g.posterUrl,
+              title: g.title,
+              genre: g.genre,
+              rating: g.rating,
+              status: gameuser !== null ? 1 : 0,
+              price: g.price,
+              url: g.url,
+              code: gameuser !== null ? gameuser.code : '',
+            };
+          })
+        );
         return {
           code: 200,
           message: 'Get game success',
-          data: gamesData,
+          data: gamesDatas,
         };
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   },
