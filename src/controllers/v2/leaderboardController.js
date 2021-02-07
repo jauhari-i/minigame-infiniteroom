@@ -25,7 +25,8 @@ module.exports = controller = {
   },
   generateNewCode: async (req, res) => {
     const { id } = req.params;
-    const query = await generateCode(id);
+    const { date, time } = req.body;
+    const query = await generateCode(id, date, time);
     if (query) {
       if (!query.code) {
         return res.status(500).json({

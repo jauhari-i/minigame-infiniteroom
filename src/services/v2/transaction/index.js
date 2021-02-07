@@ -1,5 +1,6 @@
 const Cart = require('../../../models/v2/Cart');
 const CartItem = require('../../../models/v2/CartItem');
+const Game = require('../../../models/v2/Games');
 const UserGame = require('../../../models/v2/UserGame');
 const User = require('../../../models/v2/Users');
 const Transaction = require('../../../models/v2/Transaction');
@@ -31,13 +32,30 @@ module.exports = services = {
           const transactionItems = await Promise.all(
             cartUserItems.map(async (i) => {
               const cartItemData = await CartItem.findOne({ cartItemId: i, deletedAt: null });
+              const game = await Game.findOne({ gameId: cartItemData.cartGameId });
               return {
                 cartItemId: cartItemData.cartItemId,
                 cartGameId: cartItemData.cartGameId,
-                cartGameData: cartItemData.cartGameData,
+                cartGameData: {
+                  gameId: game.gameId,
+                  title: game.title,
+                  posterUrl: game.posterUrl,
+                  imageUrl: game.imageUrl,
+                  genre: game.genre,
+                  price: game.price,
+                  description: game.description,
+                  difficulty: game.difficulty,
+                  duration: game.duration,
+                  capacity: game.capacity,
+                  rating: game.rating,
+                  createdAt: game.createdAt,
+                  createdBy: game.createdBy,
+                },
+                timeStart: cartItemData.timeStart,
+                timeEnd: cartItemData.timeEnd,
                 members: cartItemData.members,
                 membersCount: cartItemData.membersCount,
-                dateTimePlay: cartItemData.dateTimePlay,
+                datePlay: cartItemData.datePlay,
                 price: cartItemData.price,
                 createdAt: cartItemData.createdAt,
               };
@@ -125,6 +143,7 @@ module.exports = services = {
         };
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   },
@@ -218,8 +237,13 @@ module.exports = services = {
                   userId: transactionData.userId,
                   gameId: item.cartGameId,
                   code: generateCode(8),
-                  detail: item,
-                  playingTime: item.dateTimePlay,
+                  members: item.members,
+                  timeStart: item.timeStart,
+                  timeEnd: item.timeEnd,
+                  members: item.members,
+                  playingDate: item.datePlay,
+                  expired: item.datePlay < Date.now() ? true : false,
+                  createdAt: Date.now(),
                 });
                 return userGameQuery;
               })

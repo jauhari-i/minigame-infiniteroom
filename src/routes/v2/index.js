@@ -138,7 +138,7 @@ router.put(
 
 router.post('/join/game', requireAuth, leaderboardController.joinUserGame);
 router.post('/save/game', requireAuth, leaderboardController.saveUserGame);
-router.get(
+router.put(
   '/generate/code/:id',
   [requireAuth, isAdmin.cekAdmin],
   leaderboardController.generateNewCode

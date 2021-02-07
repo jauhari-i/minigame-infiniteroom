@@ -7,11 +7,14 @@ const cartItemSchema = new mongoose.Schema({
   cartGameId: {
     type: String,
   },
-  cartGameData: {
-    type: Object,
-  },
-  dateTimePlay: {
+  datePlay: {
     type: Date,
+  },
+  timeStart: {
+    type: Number,
+  },
+  timeEnd: {
+    type: Number,
   },
   members: {
     type: Array,

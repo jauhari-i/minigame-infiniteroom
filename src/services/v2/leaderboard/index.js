@@ -1,7 +1,22 @@
 const UserGame = require('../../../models/v2/UserGame');
 const LeaderBoard = require('../../../models/v2/Leaderboard');
 const User = require('../../../models/v2/Users');
+const Game = require('../../../models/v2/Games');
 const { v4: uuid } = require('uuid');
+
+const timeGlobal = [9, 12, 15, 19];
+
+const getTimeStart = (t) => {
+  const tIndex = t - 1;
+  return timeGlobal[tIndex];
+};
+
+const getTimeEnd = (t, d) => {
+  const tIndex = t - 1;
+  const timeUser = timeGlobal[tIndex];
+  const hDuration = d / 60;
+  return timeUser + hDuration;
+};
 
 module.exports = leaderBoardService = {
   joinGame: async (code, decoded) => {
@@ -37,7 +52,9 @@ module.exports = leaderBoardService = {
               userGameId: userGame.userGameId,
               userId: userGame.userId,
               gameId: userGame.gameId,
-              detail: userGame.detail,
+              playingDate: userGame.playingDate,
+              timeStart: userGame.timeStart,
+              timeEnd: userGame.timeEnd,
               members: userGame.members,
               code: userGame.code,
               activeUser: userData.userId,
@@ -49,7 +66,7 @@ module.exports = leaderBoardService = {
       return error;
     }
   },
-  generateCode: async (userGameId) => {
+  generateCode: async (userGameId, date, time) => {
     try {
       const generateCodes = (length) => {
         var result = '';
@@ -62,6 +79,7 @@ module.exports = leaderBoardService = {
       };
       const codes = generateCodes(8);
       const userGame = await UserGame.findOne({ userGameId: userGameId });
+      const game = await Game.findOne({ gameId: userGame.gameId });
       if (!userGame) {
         throw {
           code: 404,
@@ -70,7 +88,14 @@ module.exports = leaderBoardService = {
       } else {
         const updateQuery = await UserGame.updateOne(
           { userGameId: userGame.userGameId },
-          { code: codes, editedAt: Date.now() }
+          {
+            code: codes,
+            playingDate: date,
+            expired: date < Date.now() ? true : false,
+            timeStart: getTimeStart(time),
+            timeEnd: getTimeEnd(time, game.duration),
+            editedAt: Date.now(),
+          }
         );
         if (updateQuery) {
           return {
@@ -82,7 +107,10 @@ module.exports = leaderBoardService = {
                 userGameId: userGame.userGameId,
                 userId: userGame.userId,
                 gameId: userGame.gameId,
-                detail: userGame.detail,
+                playingDate: userGame.playingDate,
+                timeStart: userGame.timeStart,
+                timeEnd: userGame.timeEnd,
+                members: userGame.members,
                 code: codes,
               },
             },
@@ -119,14 +147,29 @@ module.exports = leaderBoardService = {
             message: 'User not found',
           };
         } else {
+          const game = await Game.findOne({ gameId: userGame.gameId });
           const createLeaderBoard = await LeaderBoard.create({
             leaderBoardId: uuid(),
             leaderName: userData.name,
             teamName: teamName,
             teamIcon: teamLogo,
-            members: userGameData.detail[0].members,
+            members: userGameData.members,
             gameId: gameId,
-            gameDetail: userGameData.detail[0],
+            gameDetail: {
+              gameId: game.gameId,
+              title: game.title,
+              posterUrl: game.posterUrl,
+              imageUrl: game.imageUrl,
+              genre: game.genre,
+              price: game.price,
+              description: game.description,
+              difficulty: game.difficulty,
+              duration: game.duration,
+              capacity: game.capacity,
+              rating: game.rating,
+              createdAt: game.createdAt,
+              createdBy: game.createdBy,
+            },
             code: userGameData.code,
             time: time,
             score: totalScore,

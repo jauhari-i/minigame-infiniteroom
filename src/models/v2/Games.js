@@ -43,6 +43,10 @@ const gameSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  status: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

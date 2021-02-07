@@ -4,6 +4,11 @@ const Admin = require('../../../models/v2/Admin');
 const UserGame = require('../../../models/v2/UserGame');
 const User = require('../../../models/v2/Users');
 
+const statusGame = {
+  cs: 0,
+  pl: 1,
+};
+
 module.exports = gameService = {
   addGame: async (
     { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration, url },
@@ -29,6 +34,7 @@ module.exports = gameService = {
         capacity,
         duration,
         url,
+        status: 0,
         createdBy: admin.name,
       });
       if (!game)
@@ -51,6 +57,7 @@ module.exports = gameService = {
           capacity: game.capacity,
           duration: game.duration,
           url: game.url,
+          status: game.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
         },
       };
     } catch (error) {
@@ -80,6 +87,7 @@ module.exports = gameService = {
           capacity: item.capacity,
           rating: item.rating,
           url: item.url,
+          status: item.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
           createdAt: item.createdAt,
           createdBy: item.createdBy,
         }));
@@ -113,6 +121,7 @@ module.exports = gameService = {
           genre: item.genre,
           rating: item.rating,
           status: 0,
+          gameStatus: item.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
           price: item.price,
           url: item.url,
         }));
@@ -137,6 +146,7 @@ module.exports = gameService = {
               genre: g.genre,
               rating: g.rating,
               status: gameuser !== null ? 1 : 0,
+              gameStatus: g.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
               price: g.price,
               url: g.url,
               code: gameuser !== null ? gameuser.code : '',
@@ -182,6 +192,7 @@ module.exports = gameService = {
             rating: game.rating,
             url: game.url,
             status: 1,
+            gameStatus: game.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
             createdAt: game.createdAt,
             createdBy: game.createdBy,
           },
@@ -204,6 +215,7 @@ module.exports = gameService = {
             rating: game.rating,
             url: game.url,
             status: 0,
+            gameStatus: game.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
             createdAt: game.createdAt,
             createdBy: game.createdBy,
           },
@@ -214,7 +226,18 @@ module.exports = gameService = {
     }
   },
   editGame: async (
-    { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration },
+    {
+      title,
+      posterUrl,
+      imageUrl,
+      genre,
+      price,
+      status,
+      description,
+      difficulty,
+      capacity,
+      duration,
+    },
     id
   ) => {
     try {
@@ -242,6 +265,7 @@ module.exports = gameService = {
             difficulty,
             capacity,
             duration,
+            status,
             editedAt: Date.now(),
           }
         );
@@ -303,10 +327,10 @@ module.exports = gameService = {
               active: item.active,
               code: item.code,
               activeUser: item.activeUser,
-              expired: item.detail[0].dateTimePlay < Date.now() ? true : false,
-              playingTime: item.detail[0].dateTimePlay
-                ? item.detail[0].dateTimePlay
-                : item.playingTime,
+              expired: item.playingDate < Date.now() ? true : false,
+              playingDate: item.playingDate,
+              timeStart: item.timeStart,
+              timeEnd: item.timeEnd,
               userDetail: {
                 userId: user.userId,
                 name: user.name,

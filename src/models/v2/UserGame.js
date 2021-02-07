@@ -13,7 +13,7 @@ const userGameSchema = new mongoose.Schema({
   code: {
     type: String,
   },
-  detail: {
+  members: {
     type: Array,
   },
   active: {
@@ -23,8 +23,17 @@ const userGameSchema = new mongoose.Schema({
   activeUser: {
     type: String,
   },
-  playingTime: {
+  playingDate: {
     type: Date,
+  },
+  timeStart: {
+    type: Number,
+  },
+  timeEnd: {
+    type: Number,
+  },
+  expired: {
+    type: Boolean,
   },
   createdAt: {
     type: Date,

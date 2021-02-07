@@ -2,8 +2,8 @@ const { cartServices } = require('../../services/v2');
 
 module.exports = controller = {
   addItemsToCart: async (req, res) => {
-    const { dateTime, gameId, members } = req.body;
-    const query = await cartServices.addToCart(dateTime, members, gameId, req.decoded);
+    const { dateTime, gameId, members, time } = req.body;
+    const query = await cartServices.addToCart(dateTime, members, gameId, time, req.decoded);
     if (query) {
       if (!query.code) {
         return res.status(500).json({

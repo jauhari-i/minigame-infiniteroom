@@ -1,12 +1,36 @@
 const Cart = require('../../../models/v2/Cart');
 const CartItem = require('../../../models/v2/CartItem');
 const Game = require('../../../models/v2/Games');
+const UserGame = require('../../../models/v2/UserGame');
 const { v4: uuid } = require('uuid');
 
+const timeGlobal = [9, 12, 15, 19];
+
+const getTimeStart = (t) => {
+  const tIndex = t - 1;
+  return timeGlobal[tIndex];
+};
+
+const getTimeEnd = (t, d) => {
+  const tIndex = t - 1;
+  const timeUser = timeGlobal[tIndex];
+  const hDuration = d / 60;
+  return timeUser + hDuration;
+};
+
 module.exports = services = {
-  addToCart: async (dateTime, members, gameId, decoded) => {
+  addToCart: async (dateTime, members, gameId, time, decoded) => {
+    console.log(decoded);
     const { sub } = decoded;
     try {
+      // check if user already buy the game
+      const usergame = await UserGame.findOne({ userId: sub, gameId: gameId });
+      if (usergame) {
+        throw {
+          code: 400,
+          message: 'Game already purcashed!',
+        };
+      }
       const game = await Game.findOne({ gameId: gameId, deletedAt: null });
       if (!game)
         throw {
@@ -16,24 +40,11 @@ module.exports = services = {
       const items = await CartItem.create({
         cartItemId: uuid(),
         cartGameId: game.gameId,
-        cartGameData: {
-          gameId: game.gameId,
-          title: game.title,
-          posterUrl: game.posterUrl,
-          imageUrl: game.imageUrl,
-          genre: game.genre,
-          price: game.price,
-          description: game.description,
-          difficulty: game.difficulty,
-          duration: game.duration,
-          capacity: game.capacity,
-          rating: game.rating,
-          createdAt: game.createdAt,
-          createdBy: game.createdBy,
-        },
-        dateTimePlay: dateTime,
+        datePlay: dateTime,
         members: members,
         membersCount: members.length ? members.length : 0,
+        timeStart: getTimeStart(time),
+        timeEnd: getTimeEnd(time, game.duration),
         price: game.price,
       });
       if (items) {
@@ -126,7 +137,6 @@ module.exports = services = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },
@@ -207,13 +217,30 @@ module.exports = services = {
           const itemsData = await Promise.all(
             items.map(async (itemId) => {
               const cartItemData = await CartItem.findOne({ cartItemId: itemId });
+              const game = await Game.findOne({ gameId: cartItemData.cartGameId });
               return {
                 cartItemId: cartItemData.cartItemId,
                 cartGameId: cartItemData.cartGameId,
-                cartGameData: cartItemData.cartGameData,
+                cartGameData: {
+                  gameId: game.gameId,
+                  title: game.title,
+                  posterUrl: game.posterUrl,
+                  imageUrl: game.imageUrl,
+                  genre: game.genre,
+                  price: game.price,
+                  description: game.description,
+                  difficulty: game.difficulty,
+                  duration: game.duration,
+                  capacity: game.capacity,
+                  rating: game.rating,
+                  createdAt: game.createdAt,
+                  createdBy: game.createdBy,
+                },
+                timeStart: cartItemData.timeStart,
+                timeEnd: cartItemData.timeEnd,
                 members: cartItemData.members,
                 membersCount: cartItemData.membersCount,
-                dateTimePlay: cartItemData.dateTimePlay,
+                datePlay: cartItemData.datePlay,
                 price: cartItemData.price,
                 createdAt: cartItemData.createdAt,
               };
