@@ -327,7 +327,7 @@ module.exports = gameService = {
               active: item.active,
               code: item.code,
               activeUser: item.activeUser,
-              expired: item.playingDate < Date.now() ? true : false,
+              expired: item.expired,
               playingDate: item.playingDate,
               timeStart: item.timeStart,
               timeEnd: item.timeEnd,
@@ -372,7 +372,6 @@ module.exports = gameService = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },

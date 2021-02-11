@@ -401,10 +401,13 @@ module.exports = services = {
           })
         );
         if (transactionData) {
+          const sortedData = transactionData.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
           return {
             code: 200,
             message: 'Get transaction success',
-            data: transactionData,
+            data: sortedData,
           };
         } else {
           throw {

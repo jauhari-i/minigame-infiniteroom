@@ -18,6 +18,34 @@ const getTimeEnd = (t, d) => {
   return timeUser + hDuration;
 };
 
+const getExpired = (date, timeStart, timeEnd) => {
+  const today = new Date();
+  const tDate = today.getDate();
+  const hours = today.getHours();
+  const month = today.getMonth();
+  const playDate = new Date(date);
+  const pDate = playDate.getDate();
+  const pHours = timeStart;
+  const pEnd = timeEnd;
+  const pMonth = playDate.getMonth();
+
+  if (playDate > today) {
+    return 0;
+  } else if (playDate <= today) {
+    if (tDate === pDate && month === pMonth) {
+      if (hours <= pHours && hours <= pEnd) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      return 1;
+    }
+  } else {
+    return 1;
+  }
+};
+
 module.exports = leaderBoardService = {
   joinGame: async (code, decoded) => {
     const { sub } = decoded;
@@ -90,8 +118,13 @@ module.exports = leaderBoardService = {
           { userGameId: userGame.userGameId },
           {
             code: codes,
+            active: 0,
+            activeUser: '',
             playingDate: date,
-            expired: date < Date.now() ? true : false,
+            expired:
+              getExpired(date, getTimeStart(time), getTimeEnd(time, game.duration)) === 1
+                ? true
+                : false,
             timeStart: getTimeStart(time),
             timeEnd: getTimeEnd(time, game.duration),
             editedAt: Date.now(),
@@ -108,6 +141,10 @@ module.exports = leaderBoardService = {
                 userId: userGame.userId,
                 gameId: userGame.gameId,
                 playingDate: userGame.playingDate,
+                expired:
+                  getExpired(date, getTimeStart(time), getTimeEnd(time, game.duration)) === 1
+                    ? true
+                    : false,
                 timeStart: userGame.timeStart,
                 timeEnd: userGame.timeEnd,
                 members: userGame.members,
