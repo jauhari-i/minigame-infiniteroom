@@ -33,10 +33,10 @@ const getExpired = (date, timeStart, timeEnd) => {
     return 0;
   } else if (playDate <= today) {
     if (tDate === pDate && month === pMonth) {
-      if (hours <= pHours && hours <= pEnd) {
-        return 0;
-      } else if (hours > pHours) {
+      if (hours > pEnd) {
         return 1;
+      } else if (hours <= pHours && hours <= pEnd) {
+        return 0;
       } else {
         return 1;
       }
