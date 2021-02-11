@@ -9,6 +9,36 @@ const statusGame = {
   pl: 1,
 };
 
+const getExpired = (date, timeStart, timeEnd) => {
+  const today = new Date();
+  const tDate = today.getDate();
+  const hours = today.getHours();
+  const month = today.getMonth();
+  const playDate = new Date(date);
+  const pDate = playDate.getDate();
+  const pHours = timeStart;
+  const pEnd = timeEnd;
+  const pMonth = playDate.getMonth();
+
+  if (playDate > today) {
+    return 0;
+  } else if (playDate <= today) {
+    if (tDate === pDate && month === pMonth) {
+      if (hours > pEnd) {
+        return 1;
+      } else if (hours <= pEnd) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      return 1;
+    }
+  } else {
+    return 1;
+  }
+};
+
 module.exports = gameService = {
   addGame: async (
     { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration, url },
@@ -327,7 +357,8 @@ module.exports = gameService = {
               active: item.active,
               code: item.code,
               activeUser: item.activeUser,
-              expired: item.expired,
+              expired:
+                getExpired(item.playingDate, item.timeStart, item.timeEnd) === 1 ? true : false,
               playingDate: item.playingDate,
               timeStart: item.timeStart,
               timeEnd: item.timeEnd,

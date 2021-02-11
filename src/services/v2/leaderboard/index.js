@@ -35,7 +35,7 @@ const getExpired = (date, timeStart, timeEnd) => {
     if (tDate === pDate && month === pMonth) {
       if (hours > pEnd) {
         return 1;
-      } else if (hours <= pHours && hours <= pEnd) {
+      } else if (hours <= pEnd) {
         return 0;
       } else {
         return 1;
