@@ -16,6 +16,34 @@ const status = {
   expired: 4,
 };
 
+const getExpired = (date, timeStart, timeEnd) => {
+  const today = new Date();
+  const tDate = today.getDate();
+  const hours = today.getHours();
+  const month = today.getMonth();
+  const playDate = new Date(date);
+  const pDate = playDate.getDate();
+  const pHours = timeStart;
+  const pEnd = timeEnd;
+  const pMonth = playDate.getMonth();
+
+  if (playDate > today) {
+    return 0;
+  } else if (playDate <= today) {
+    if (tDate === pDate && month === pMonth) {
+      if (hours <= pHours && hours <= pEnd) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      return 1;
+    }
+  } else {
+    return 1;
+  }
+};
+
 module.exports = services = {
   checkoutTransaction: async (cartId, decoded) => {
     const { sub } = decoded;
@@ -242,7 +270,8 @@ module.exports = services = {
                   timeEnd: item.timeEnd,
                   members: item.members,
                   playingDate: item.datePlay,
-                  expired: item.datePlay < Date.now() ? true : false,
+                  expired:
+                    getExpired(item.datePlay, item.timeStart, item.timeEnd) === 1 ? true : false,
                   createdAt: Date.now(),
                 });
                 return userGameQuery;
