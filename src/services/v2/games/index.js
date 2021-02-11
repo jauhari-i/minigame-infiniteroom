@@ -350,6 +350,7 @@ module.exports = gameService = {
           usersgames.map(async (item) => {
             const user = await User.findOne({ userId: item.userId, deletedAt: null });
             const game = await Game.findOne({ gameId: item.gameId, deletedAt: null });
+            console.log(getExpired(item.playingDate, item.timeStart, item.timeEnd));
             const rawData = {
               userGameId: item.userGameId,
               userId: item.userId,
@@ -396,6 +397,7 @@ module.exports = gameService = {
             return rawData;
           })
         );
+        console.log(data);
         return {
           code: 200,
           message: 'Get user game success',
