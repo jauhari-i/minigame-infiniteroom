@@ -186,7 +186,7 @@ module.exports = leaderBoardService = {
             message: 'User not found',
           };
         } else {
-          const game = await Game.findOne({ gameId: userGame.gameId });
+          const game = await Game.findOne({ gameId: userGameData.gameId });
           const createLeaderBoard = await LeaderBoard.create({
             leaderBoardId: uuid(),
             leaderName: userData.name,

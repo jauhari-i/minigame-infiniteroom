@@ -6,4 +6,5 @@ module.exports = v2 = {
   leaderboardServices: require('./leaderboard'),
   transactionServices: require('./transaction'),
   userServices: require('./users'),
+  dashbaordServices: require('./dashboard'),
 };

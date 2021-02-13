@@ -40,6 +40,46 @@ module.exports = userServices = {
       return error;
     }
   },
+  getUserDetail: async (id) => {
+    try {
+      const user = await User.findOne({ userId: id, deletedAt: null });
+      if (!user) {
+        throw {
+          code: 404,
+          message: 'User not found',
+        };
+      }
+
+      function calculateAge(birthday) {
+        // birthday is a date
+        var ageDifMs = Date.now() - birthday.getTime();
+        var ageDate = new Date(ageDifMs); // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+      }
+
+      const age = user.birthday ? calculateAge(user.birthday) : 0;
+      return {
+        code: 200,
+        message: 'Get user profile success',
+        data: {
+          userId: user.userId,
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          city: user.city,
+          province: user.province,
+          photoUrl: user.userPhotos,
+          phoneNumber: user.phoneNumber,
+          age: age,
+          isVerified: user.isVerified,
+          birthday: user.birthday,
+          createdAt: user.createdAt,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  },
   updateProfile: async (
     { name, username, city, province, photoUrl, birthday, phoneNumber },
     decoded
@@ -57,6 +97,48 @@ module.exports = userServices = {
           userPhotos: url,
           birthday: birthday,
           phoneNumber: phoneNumber,
+          editedAt: Date.now(),
+        }
+      );
+      if (!query) {
+        throw {
+          code: 500,
+          message: 'Internal server error',
+        };
+      }
+      return {
+        code: 200,
+        message: 'Update user success',
+      };
+    } catch (error) {
+      return error;
+    }
+  },
+  updateUser: async (
+    { name, username, city, province, photoUrl, birthday, phoneNumber, verified },
+    id
+  ) => {
+    try {
+      const user = await User.findOne({ userId: id, deletedAt: null });
+      if (!user) {
+        throw {
+          code: 404,
+          message: 'User not found',
+        };
+      }
+      const url = photoUrl ? photoUrl : user.userPhotos;
+      const query = await User.updateOne(
+        { userId: id },
+        {
+          name: name,
+          userame: username,
+          city: city,
+          province: province,
+          userPhotos: url,
+          birthday: birthday,
+          phoneNumber: phoneNumber,
+          isVerified: verified,
+          verifiedAt: verified ? Date.now() : null,
           editedAt: Date.now(),
         }
       );

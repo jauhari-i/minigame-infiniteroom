@@ -24,4 +24,4 @@ const leaderBoardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('leaderboardv2', leaderBoardSchema);
+module.exports = Leaderboard = mongoose.model('leaderboardv2', leaderBoardSchema);

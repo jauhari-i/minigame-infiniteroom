@@ -13,6 +13,7 @@ const {
   leaderboardController,
   transactionController,
   userController,
+  dashboardController,
 } = require('../../controllers/v2');
 
 const authValidator = require('../../middlewares/validators/v2/auth');
@@ -20,6 +21,8 @@ const userValidator = require('../../middlewares/validators/v2/users');
 const adminValidator = require('../../middlewares/validators/v2/admin');
 const gameValidator = require('../../middlewares/validators/v2/game');
 const transactionValidator = require('../../middlewares/validators/v2/transaksi');
+
+router.get('/dashboard', [requireAuth, isAdmin.cekAdmin], dashboardController.fetchDashboard);
 
 router.post(
   '/admin/register',
@@ -48,6 +51,12 @@ router.delete('/admin/:id', [requireAuth, isAdmin.cekSuperAdmin], adminControlle
 
 router.get('/user/list', requireAuth, userController.getListUser);
 router.get('/user/profile', requireAuth, userController.getProfileUser);
+router.get('/user/detail/:id', [requireAuth, isAdmin.cekAdmin], userController.getUserDetail);
+router.put(
+  '/user/update/:id',
+  [requireAuth, uploadImage.single('photos'), userValidator.updateUser],
+  userController.updateUser
+);
 router.put(
   '/user/edit-profile',
   [requireAuth, uploadImage.single('photos'), userValidator.updateUser],

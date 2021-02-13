@@ -6,4 +6,5 @@ module.exports = controller = {
   leaderboardController: require('./leaderboardController'),
   transactionController: require('./transactionController'),
   userController: require('./userController'),
+  dashboardController: require('./dashboardController'),
 };
