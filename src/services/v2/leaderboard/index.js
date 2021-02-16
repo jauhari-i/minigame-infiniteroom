@@ -201,6 +201,7 @@ module.exports = leaderBoardService = {
               imageUrl: game.imageUrl,
               genre: game.genre,
               price: game.price,
+              discount: game.discount,
               description: game.description,
               difficulty: game.difficulty,
               duration: game.duration,

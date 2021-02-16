@@ -41,7 +41,7 @@ const getExpired = (date, timeStart, timeEnd) => {
 
 module.exports = gameService = {
   addGame: async (
-    { title, posterUrl, imageUrl, genre, price, description, difficulty, capacity, duration, url },
+    { title, posterUrl, imageUrl, genre, price, discount, description, difficulty, capacity, duration, url },
     decoded
   ) => {
     try {
@@ -59,6 +59,7 @@ module.exports = gameService = {
         imageUrl,
         genre,
         price,
+        discount,
         description,
         difficulty,
         capacity,
@@ -82,6 +83,7 @@ module.exports = gameService = {
           imageUrl: game.imageUrl,
           genre: game.genre,
           price: game.price,
+          discount: game.discount,
           description: game.description,
           difficulty: game.difficulty,
           capacity: game.capacity,
@@ -111,6 +113,7 @@ module.exports = gameService = {
           imageUrl: item.imageUrl,
           genre: item.genre,
           price: item.price,
+          discount: item.discount,
           description: item.description,
           difficulty: item.difficulty,
           duration: item.duration,
@@ -153,6 +156,7 @@ module.exports = gameService = {
           status: 0,
           gameStatus: item.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
           price: item.price,
+          discount: item.discount,
           url: item.url,
         }));
         return {
@@ -178,6 +182,7 @@ module.exports = gameService = {
               status: gameuser !== null ? 1 : 0,
               gameStatus: g.status === statusGame.cs ? 'Coming Soon' : 'Get Code',
               price: g.price,
+              discount: g.discount,
               url: g.url,
               code: gameuser !== null ? gameuser.code : '',
             };
@@ -215,6 +220,7 @@ module.exports = gameService = {
             imageUrl: game.imageUrl,
             genre: game.genre,
             price: game.price,
+            discount: game.discount,
             description: game.description,
             difficulty: game.difficulty,
             duration: game.duration,
@@ -238,6 +244,7 @@ module.exports = gameService = {
             imageUrl: game.imageUrl,
             genre: game.genre,
             price: game.price,
+            discount: game.discount,
             description: game.description,
             difficulty: game.difficulty,
             duration: game.duration,
@@ -262,6 +269,7 @@ module.exports = gameService = {
       imageUrl,
       genre,
       price,
+      discount,
       status,
       description,
       difficulty,
@@ -291,6 +299,7 @@ module.exports = gameService = {
             imageUrl: imageUrls,
             genre,
             price,
+            discount,
             description,
             difficulty,
             capacity,
@@ -382,6 +391,7 @@ module.exports = gameService = {
                 imageUrl: game.imageUrl,
                 genre: game.genre,
                 price: game.price,
+                discount: game.discount,
                 description: game.description,
                 difficulty: game.difficulty,
                 duration: game.duration,
