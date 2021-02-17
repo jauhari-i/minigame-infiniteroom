@@ -19,6 +19,9 @@ const gameSchema = new mongoose.Schema({
   price: {
     type: Number,
   },
+  discount: {
+    type: Number,
+  },
   description: {
     type: String,
   },
