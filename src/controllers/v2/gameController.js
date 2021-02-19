@@ -22,7 +22,6 @@ module.exports = gameController = {
         return (imageUrl = item.path);
       });
       const { title, genre, price, discount, description, rating, difficulty, capacity, duration, url } = req.body;
-      // let discountPrice = req.body.price - req.body.price*req.body.discount/100
       const query = await gameService.addGame(
         {
           title,
@@ -31,8 +30,8 @@ module.exports = gameController = {
           genre,
           price,
           discount,
+          discountPrice,
           rating,
-          // discountPrice,
           description,
           difficulty,
           capacity,
@@ -136,7 +135,6 @@ module.exports = gameController = {
           price,
           discount,
           rating,
-          // discountPrice:price - price*discount/100,
           description,
           difficulty,
           capacity,

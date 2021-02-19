@@ -23,10 +23,10 @@ const gameSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  // discountPrice: {
-  //   type: Number,
-  //   default: 0,
-  // },
+  discountPrice: {
+    type: Number,
+    default: 0,
+  },
   description: {
     type: String,
   },
