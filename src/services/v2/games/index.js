@@ -385,7 +385,7 @@ module.exports = gameService = {
             let rawData;
             const user = await User.findOne({ userId: item.userId, deletedAt: null });
             const game = await Game.findOne({ gameId: item.gameId, deletedAt: null });
-            console.log(game);
+            console.log(item);
             if (!user || !game) {
               rawData = {
                 userGameId: item.userGameId,
