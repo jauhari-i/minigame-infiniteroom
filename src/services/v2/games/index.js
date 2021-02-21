@@ -385,7 +385,6 @@ module.exports = gameService = {
             let rawData;
             const user = await User.findOne({ userId: item.userId, deletedAt: null });
             const game = await Game.findOne({ gameId: item.gameId, deletedAt: null });
-            console.log(item);
             if (!user || !game) {
               rawData = {
                 userGameId: item.userGameId,
@@ -399,6 +398,36 @@ module.exports = gameService = {
                 playingDate: item.playingDate,
                 timeStart: item.timeStart,
                 timeEnd: item.timeEnd,
+                userDetail: {
+                  userId: item.userId,
+                  name: '[User is deleted]',
+                  username: '[User is deleted]',
+                  email: '[User is deleted]',
+                  city: '[User is deleted]',
+                  province: '[User is deleted]',
+                  photoUrl: '[User is deleted]',
+                  phoneNumber: '[User is deleted]',
+                  age: '[User is deleted]',
+                  birthday: '[User is deleted]',
+                  createdAt: '[User is deleted]',
+                },
+                gameDetail: {
+                  gameId: item.gameId,
+                  title: '[Game is deleted]',
+                  posterUrl: '[Game is deleted]',
+                  imageUrl: '[Game is deleted]',
+                  genre: '[Game is deleted]',
+                  price: '[Game is deleted]',
+                  description: '[Game is deleted]',
+                  difficulty: '[Game is deleted]',
+                  duration: '[Game is deleted]',
+                  capacity: '[Game is deleted]',
+                  rating: '[Game is deleted]',
+                  url: '[Game is deleted]',
+                  status: 0,
+                  createdAt: '[Game is deleted]',
+                  createdBy: '[Game is deleted]',
+                },
               };
             } else {
               rawData = {
@@ -455,7 +484,6 @@ module.exports = gameService = {
         };
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   },
