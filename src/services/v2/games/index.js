@@ -348,51 +348,69 @@ module.exports = gameService = {
       } else {
         const data = await Promise.all(
           usersgames.map(async (item) => {
+            let rawData;
             const user = await User.findOne({ userId: item.userId, deletedAt: null });
             const game = await Game.findOne({ gameId: item.gameId, deletedAt: null });
-            const rawData = {
-              userGameId: item.userGameId,
-              userId: item.userId,
-              gameId: item.gameId,
-              active: item.active,
-              code: item.code,
-              activeUser: item.activeUser,
-              expired:
-                getExpired(item.playingDate, item.timeStart, item.timeEnd) === 1 ? true : false,
-              playingDate: item.playingDate,
-              timeStart: item.timeStart,
-              timeEnd: item.timeEnd,
-              userDetail: {
-                userId: user.userId,
-                name: user.name,
-                username: user.username,
-                email: user.email,
-                city: user.city,
-                province: user.province,
-                photoUrl: user.userPhotos,
-                phoneNumber: user.phoneNumber,
-                age: user.age,
-                birthday: user.birthday,
-                createdAt: user.createdAt,
-              },
-              gameDetail: {
-                gameId: game.gameId,
-                title: game.title,
-                posterUrl: game.posterUrl,
-                imageUrl: game.imageUrl,
-                genre: game.genre,
-                price: game.price,
-                description: game.description,
-                difficulty: game.difficulty,
-                duration: game.duration,
-                capacity: game.capacity,
-                rating: game.rating,
-                url: game.url,
-                status: 1,
-                createdAt: game.createdAt,
-                createdBy: game.createdBy,
-              },
-            };
+            console.log(game);
+            if (!user || !game) {
+              rawData = {
+                userGameId: item.userGameId,
+                userId: item.userId,
+                gameId: item.gameId,
+                active: item.active,
+                code: item.code,
+                activeUser: item.activeUser,
+                expired:
+                  getExpired(item.playingDate, item.timeStart, item.timeEnd) === 1 ? true : false,
+                playingDate: item.playingDate,
+                timeStart: item.timeStart,
+                timeEnd: item.timeEnd,
+              };
+            } else {
+              rawData = {
+                userGameId: item.userGameId,
+                userId: item.userId,
+                gameId: item.gameId,
+                active: item.active,
+                code: item.code,
+                activeUser: item.activeUser,
+                expired:
+                  getExpired(item.playingDate, item.timeStart, item.timeEnd) === 1 ? true : false,
+                playingDate: item.playingDate,
+                timeStart: item.timeStart,
+                timeEnd: item.timeEnd,
+                userDetail: {
+                  userId: user.userId,
+                  name: user.name,
+                  username: user.username,
+                  email: user.email,
+                  city: user.city,
+                  province: user.province,
+                  photoUrl: user.userPhotos,
+                  phoneNumber: user.phoneNumber,
+                  age: user.age,
+                  birthday: user.birthday,
+                  createdAt: user.createdAt,
+                },
+                gameDetail: {
+                  gameId: game.gameId,
+                  title: game.title,
+                  posterUrl: game.posterUrl,
+                  imageUrl: game.imageUrl,
+                  genre: game.genre,
+                  price: game.price,
+                  description: game.description,
+                  difficulty: game.difficulty,
+                  duration: game.duration,
+                  capacity: game.capacity,
+                  rating: game.rating,
+                  url: game.url,
+                  status: 1,
+                  createdAt: game.createdAt,
+                  createdBy: game.createdBy,
+                },
+              };
+            }
             return rawData;
           })
         );
@@ -403,6 +421,7 @@ module.exports = gameService = {
         };
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   },
